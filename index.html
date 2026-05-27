@@ -901,6 +901,7 @@ let correctCount = 0;
 let wrongCount = 0;
 let missedList = [];
 let answered = false;
+let gameEnded = false;
 
 // ==================== INIT ====================
 function init() {
@@ -969,6 +970,7 @@ function startGame() {
   correctCount = 0;
   wrongCount = 0;
   missedList = [];
+  gameEnded = false;
 
   showScreen('game');
   renderQuestion();
@@ -1080,12 +1082,13 @@ function answer(selected) {
 }
 
 function nextQuestion() {
-  qIndex++;
-  if (qIndex >= 10 || qIndex >= questions.length) {
+  if (gameEnded) return;
+  if (qIndex >= 9) {
     endGame();
-  } else {
-    renderQuestion();
+    return;
   }
+  qIndex++;
+  renderQuestion();
 }
 
 // ==================== TIMER ====================
@@ -1096,7 +1099,7 @@ function startTimer() {
     updateTimerDisplay();
     if (timeLeft <= 0) {
       clearInterval(timerInterval);
-      endGame(true);
+      if (!gameEnded) endGame(true);
     }
   }, 1000);
 }
@@ -1111,6 +1114,8 @@ function updateTimerDisplay() {
 
 // ==================== END ====================
 function endGame(timeout = false) {
+  if (gameEnded) return;
+  gameEnded = true;
   clearInterval(timerInterval);
   const bonus = timeout ? 0 : Math.max(timeLeft, 0);
   const total = score + bonus;
