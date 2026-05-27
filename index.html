@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌍 世界リーダークイズ道場</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --card: #1a2235;
+    --border: #2a3a55;
+    --accent: #e8b84b;
+    --accent2: #4fc3f7;
+    --green: #4caf50;
+    --red: #f44336;
+    --text: #e8eaf0;
+    --muted: #8892a4;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* starfield bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.15) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,0.1) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 70%, rgba(255,255,255,0.12) 0%, transparent 100%),
+      radial-gradient(1px 1px at 10% 90%, rgba(255,255,255,0.08) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 60%, rgba(255,255,255,0.1) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  #app { position: relative; z-index: 1; }
+
+  /* ===== SCREENS ===== */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* ===== TOP SCREEN ===== */
+  #screen-top {
+    min-height: 100vh;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .top-header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  .globe-icon { font-size: 60px; animation: spin 8s linear infinite; display: inline-block; }
+  @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  .top-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(2.2rem, 6vw, 4rem);
+    letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin: 8px 0 4px;
+  }
+  .top-subtitle {
+    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .rules-box {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    font-size: 0.88rem;
+    line-height: 1.9;
+  }
+  .rules-box h3 {
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .rules-box p { color: var(--muted); }
+  .rules-box strong { color: var(--text); }
+
+  /* section label */
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin: 24px 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* genre cards */
+  .genre-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .genre-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .genre-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 60%, rgba(232,184,75,0.06));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .genre-card:hover::before { opacity: 1; }
+  .genre-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(232,184,75,0.15);
+  }
+  .genre-card.selected {
+    border-color: var(--accent);
+    background: rgba(232,184,75,0.08);
+  }
+  .genre-emoji { font-size: 2rem; margin-bottom: 8px; }
+  .genre-name {
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+  .genre-desc {
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .genre-count {
+    font-size: 0.72rem;
+    color: var(--accent);
+    margin-top: 6px;
+  }
+  .click-start-hint {
+    font-size: 0.78rem;
+    color: var(--accent2);
+    text-align: center;
+    margin: -4px 0 16px;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:0.6;} 50%{opacity:1;} }
+
+  /* name input */
+  .name-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .name-section label {
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 8px;
+    letter-spacing: 0.08em;
+  }
+  .name-section input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-section input:focus { border-color: var(--accent2); }
+
+  .btn-start {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent), #d4a030);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    letter-spacing: 0.08em;
+    transition: all 0.2s;
+    margin-bottom: 12px;
+  }
+  .btn-start:hover { transform: scale(1.02); box-shadow: 0 6px 20px rgba(232,184,75,0.4); }
+  .btn-start:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ranking toggle */
+  .btn-ranking {
+    width: 100%;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--accent2);
+    font-size: 0.9rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+  }
+  .btn-ranking:hover { border-color: var(--accent2); background: rgba(79,195,247,0.05); }
+
+  /* portal button */
+  .btn-portal {
+    display: block;
+    text-align: center;
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.85rem;
+    padding: 10px;
+    border-radius: 8px;
+    transition: color 0.2s;
+    margin-top: 4px;
+  }
+  .btn-portal:hover { color: var(--accent2); }
+
+  /* ranking inline */
+  #ranking-inline {
+    display: none;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+  #ranking-inline h3 {
+    font-size: 0.85rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+  }
+  .ranking-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  .ranking-row:last-child { border-bottom: none; }
+  .rank-num { font-weight: 700; width: 24px; text-align: center; }
+  .rank-name { flex: 1; }
+  .rank-genre { font-size: 0.75rem; color: var(--muted); }
+  .rank-score { font-weight: 700; color: var(--accent); }
+  .rank-1 .rank-num { color: var(--gold); }
+  .rank-2 .rank-num { color: var(--silver); }
+  .rank-3 .rank-num { color: var(--bronze); }
+
+  /* ===== GAME SCREEN ===== */
+  #screen-game {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .game-header {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(10,14,26,0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid var(--border);
+  }
+  .progress-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .q-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.1rem;
+    color: var(--text);
+    letter-spacing: 0.05em;
+  }
+  .score-display {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+  .timer-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+  }
+  .timer-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; }
+  .timer-num {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    color: var(--accent2);
+    transition: color 0.3s;
+  }
+  .timer-num.warn { color: var(--accent); }
+  .timer-num.danger { color: var(--red); animation: blink 0.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    width: 100%;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent2), var(--accent));
+    transition: width 0.3s ease;
+  }
+
+  .game-body {
+    flex: 1;
+    padding: 20px 16px;
+  }
+
+  .q-type-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .q-type-badge.four { background: rgba(79,195,247,0.15); color: var(--accent2); border: 1px solid rgba(79,195,247,0.3); }
+  .q-type-badge.tf { background: rgba(232,184,75,0.15); color: var(--accent); border: 1px solid rgba(232,184,75,0.3); }
+
+  .q-text {
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    font-weight: 700;
+    line-height: 1.7;
+    margin-bottom: 24px;
+    min-height: 60px;
+  }
+
+  .choices-grid {
+    display: grid;
+    gap: 10px;
+  }
+  .choices-grid.four-cols { grid-template-columns: 1fr 1fr; }
+  .choices-grid.two-cols { grid-template-columns: 1fr 1fr; }
+
+  .choice-btn {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 12px;
+    color: var(--text);
+    font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    line-height: 1.4;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .choice-btn:hover:not(:disabled) {
+    border-color: var(--accent2);
+    background: rgba(79,195,247,0.06);
+    transform: scale(1.02);
+  }
+  .choice-btn.correct {
+    background: rgba(76,175,80,0.2);
+    border-color: var(--green);
+    color: #a5d6a7;
+  }
+  .choice-btn.wrong {
+    background: rgba(244,67,54,0.15);
+    border-color: var(--red);
+    color: #ef9a9a;
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  .tf-btn {
+    font-size: 1.5rem;
+    letter-spacing: 0.1em;
+    padding: 20px;
+  }
+
+  .feedback-box {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    min-height: 46px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .feedback-box.show { opacity: 1; }
+  .feedback-box.ok { background: rgba(76,175,80,0.15); border: 1px solid rgba(76,175,80,0.3); color: #a5d6a7; }
+  .feedback-box.ng { background: rgba(244,67,54,0.12); border: 1px solid rgba(244,67,54,0.25); color: #ef9a9a; }
+
+  .btn-next {
+    width: 100%;
+    margin-top: 16px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    cursor: pointer;
+    display: none;
+    transition: all 0.2s;
+  }
+  .btn-next:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-next.show { display: block; }
+
+  /* ===== RESULT SCREEN ===== */
+  #screen-result {
+    min-height: 100vh;
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .result-header {
+    text-align: center;
+    padding: 30px 0 20px;
+  }
+  .trophy-icon { font-size: 60px; }
+  .result-title {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    letter-spacing: 0.1em;
+    color: var(--accent);
+    margin: 10px 0;
+  }
+  .total-score {
+    font-family: 'Bebas Neue', cursive;
+    font-size: clamp(3rem, 10vw, 5rem);
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+  }
+  .score-label { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.1em; }
+
+  .result-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    text-align: center;
+  }
+  .stat-card .val {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 2rem;
+    color: var(--text);
+  }
+  .stat-card .lbl { font-size: 0.72rem; color: var(--muted); margin-top: 2px; }
+  .stat-card.bonus .val { color: var(--accent); }
+
+  /* missed questions */
+  .missed-section {
+    margin: 20px 0;
+  }
+  .missed-section h3 {
+    font-size: 0.85rem;
+    color: var(--red);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .missed-item {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+  }
+  .missed-item .q { font-size: 0.88rem; color: var(--muted); margin-bottom: 6px; }
+  .missed-item .your-ans { font-size: 0.82rem; color: #ef9a9a; }
+  .missed-item .right-ans { font-size: 0.88rem; font-weight: 700; color: #a5d6a7; margin-top: 4px; }
+
+  /* result buttons */
+  .result-btns { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+  .btn-retry {
+    background: linear-gradient(135deg, var(--accent), #d4a030);
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 1rem;
+    font-weight: 900;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-retry:hover { transform: scale(1.02); }
+  .btn-top {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-family: 'Noto Sans JP', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-top:hover { border-color: var(--accent2); color: var(--accent2); }
+
+  /* rank badge */
+  .rank-badge {
+    display: inline-block;
+    padding: 8px 24px;
+    border-radius: 30px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    letter-spacing: 0.05em;
+    margin: 10px 0;
+  }
+  .rank-s { background: linear-gradient(135deg,#ffd700,#ff8c00); color: #000; }
+  .rank-a { background: linear-gradient(135deg,#4fc3f7,#1976d2); color: #fff; }
+  .rank-b { background: linear-gradient(135deg,#81c784,#388e3c); color: #fff; }
+  .rank-c { background: rgba(255,255,255,0.1); color: var(--muted); border: 1px solid var(--border); }
+
+  /* responsive */
+  @media (max-width: 480px) {
+    .choices-grid.four-cols { grid-template-columns: 1fr; }
+    .result-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ===== TOP SCREEN ===== -->
+<div id="screen-top" class="screen active">
+  <div class="top-header">
+    <div class="globe-icon">🌍</div>
+    <div class="top-title">WORLD LEADERS QUIZ</div>
+    <div class="top-subtitle">世界リーダークイズ道場</div>
+  </div>
+
+  <div class="rules-box">
+    <h3>📋 ルール</h3>
+    <p>
+      制限時間：<strong>120秒</strong> ／ 各ジャンル <strong>10問</strong> ランダム出題<br>
+      ✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>
+      ❌ 不正解 → 減点なし ＋ 時間−5秒のペナルティ<br>
+      🏆 残り時間がそのままボーナス点に加算！<br>
+      【4択】と【○×】がランダムにミックスされます
+    </p>
+  </div>
+
+  <div class="section-label">🎯 ジャンルを選ぶ ― タップで即スタート！</div>
+  <div class="click-start-hint">👇 カードをクリックするとすぐにゲームが始まります</div>
+
+  <div class="genre-grid" id="genre-grid"></div>
+
+  <div class="name-section">
+    <label>👤 プレーヤー名（ランキング登録用）</label>
+    <input type="text" id="player-name" placeholder="名前を入力してください" maxlength="12">
+  </div>
+
+  <button class="btn-start" id="btn-start" onclick="startGame()">▶ スタート（最終確認）</button>
+  <button class="btn-ranking" onclick="toggleRanking()">🏆 スコアランキングを見る</button>
+
+  <div id="ranking-inline">
+    <h3>🏆 スコアランキング TOP10</h3>
+    <div id="ranking-list"></div>
+  </div>
+
+  <a href="https://pecpec37-gift.github.io/portal/" class="btn-portal">← とみやんのゲームランドに戻る</a>
+</div>
+
+<!-- ===== GAME SCREEN ===== -->
+<div id="screen-game" class="screen">
+  <div class="game-header">
+    <div class="progress-info">
+      <div class="q-num" id="q-num">Q1 / 10</div>
+    </div>
+    <div class="score-display" id="score-display">0 pt</div>
+    <div class="timer-wrap">
+      <div class="timer-label">残り</div>
+      <div class="timer-num" id="timer-num">120</div>
+    </div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress-bar" style="width:0%"></div>
+  </div>
+  <div class="game-body">
+    <div class="q-type-badge four" id="q-type-badge">4択</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="choices-grid" id="choices-grid"></div>
+    <div class="feedback-box" id="feedback-box"></div>
+    <button class="btn-next" id="btn-next" onclick="nextQuestion()">次の問題へ →</button>
+  </div>
+</div>
+
+<!-- ===== RESULT SCREEN ===== -->
+<div id="screen-result" class="screen">
+  <div class="result-header">
+    <div class="trophy-icon">🏆</div>
+    <div class="result-title">RESULT</div>
+    <div id="rank-badge-wrap"></div>
+    <div class="total-score" id="total-score">0</div>
+    <div class="score-label">TOTAL SCORE</div>
+  </div>
+  <div class="result-stats">
+    <div class="stat-card">
+      <div class="val" id="res-correct">0</div>
+      <div class="lbl">正解数</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="res-wrong">0</div>
+      <div class="lbl">不正解数</div>
+    </div>
+    <div class="stat-card bonus">
+      <div class="val" id="res-bonus">+0</div>
+      <div class="lbl">時間ボーナス</div>
+    </div>
+  </div>
+  <div class="missed-section" id="missed-section">
+    <h3>❌ 間違えた問題と解答</h3>
+    <div id="missed-list"></div>
+  </div>
+  <div class="result-btns">
+    <button class="btn-retry" onclick="retryGame()">🔄 もう一度挑戦</button>
+    <button class="btn-top" onclick="goTop()">← ジャンル選択に戻る</button>
+    <a href="https://pecpec37-gift.github.io/portal/" class="btn-portal">← とみやんのゲームランドに戻る</a>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+// ==================== QUESTION DATA ====================
+const GENRES = [
+  {
+    id: 'trump', emoji: '🇺🇸', name: 'ドナルド・トランプ',
+    desc: '第47代アメリカ大統領', color: '#e74c3c',
+    questions: [
+      // 4択
+      {type:'four', q:'トランプ大統領の出身地はどこですか？', choices:['ニューヨーク州','フロリダ州','テキサス州','カリフォルニア州'], a:0},
+      {type:'four', q:'トランプが初めて大統領に就任した年はいつですか？', choices:['2012年','2017年','2020年','2016年'], a:1},
+      {type:'four', q:'トランプが経営していた有名なテレビ番組の名前は？', choices:['サバイバー','The Apprentice','ビッグブラザー','ドラゴンズデン'], a:1},
+      {type:'four', q:'トランプの代表的なスローガンは？', choices:['Yes We Can','Make America Great Again','Change We Can Believe In','Forward'], a:1},
+      {type:'four', q:'トランプが大学を卒業した機関はどこですか？', choices:['ハーバード大学','イェール大学','ペンシルバニア大学','コロンビア大学'], a:2},
+      {type:'four', q:'トランプは第何代アメリカ大統領ですか？（2期目）', choices:['45代','46代','47代','48代'], a:2},
+      {type:'four', q:'トランプが計画を推進した「メキシコ国境の壁」について、費用を負担するとトランプが主張した国はどこ？', choices:['アメリカ','メキシコ','カナダ','ブラジル'], a:1},
+      {type:'four', q:'トランプが所有するゴルフリゾートの総称は何ですか？', choices:['Trump Towers','Trump International','Trump National','Trump Resorts'], a:2},
+      {type:'four', q:'トランプが脱退を決定した国際協定・枠組みはどれですか？', choices:['WTO','NATO','パリ協定','G7'], a:2},
+      {type:'four', q:'トランプが第1期大統領任期中に設立した宇宙軍の名称は？', choices:['Space Force','Cosmic Command','Orbital Division','Star Guard'], a:0},
+      {type:'four', q:'トランプ大統領の娘で、政策顧問を務めたのは誰ですか？', choices:['ティファニー・トランプ','イヴァンカ・トランプ','メラニア・トランプ','バロン・トランプ'], a:1},
+      {type:'four', q:'トランプが2024年の大統領選でKAMにあたる対立候補は誰でしたか？', choices:['ジョー・バイデン','カマラ・ハリス','ピート・ブティジェッジ','エリザベス・ウォーレン'], a:1},
+      // ○×
+      {type:'tf', q:'トランプはビジネスマンとして不動産業を主な事業としていた。', a:true},
+      {type:'tf', q:'トランプは大統領就任前に政治経験（議員職など）があった。', a:false},
+      {type:'tf', q:'トランプは第1期任期中に2回弾劾訴追されました。', a:true},
+      {type:'tf', q:'トランプはSNSのTwitter（現X）から永久凍結されたことがある。', a:true},
+      {type:'tf', q:'トランプはニューヨーク・タイムズを「フェイクニュース」と批判したことがある。', a:true},
+      {type:'tf', q:'トランプの妻メラニアはアメリカ出身である。', a:false},
+      {type:'four', q:'トランプが大統領1期目に発動した「鉄鋼関税」で適用した法令は何条を根拠としましたか？', choices:['通商法201条','通商法232条','通商拡大法232条','USMCA条項'], a:2},
+      {type:'four', q:'トランプが2018年に離脱したイランとの核合意の正式名称は？', choices:['ジュネーブ合意','JCPOA（包括的共同行動計画）','NPT附属協定','カイロ条約'], a:1},
+      {type:'four', q:'トランプが推進した「アブラハム合意」においてイスラエルと国交正常化した国として含まれないのは？', choices:['UAE','バーレーン','サウジアラビア','モロッコ'], a:2},
+      {type:'tf', q:'トランプは自身の会社「トランプ・オーガニゼーション」の収益をニューヨーク州で脱税した疑いで起訴されたことがある。', a:true},
+      {type:'tf', q:'トランプはWHO（世界保健機関）からの脱退を表明したことがある。', a:true},
+      {type:'four', q:'トランプが2025年に大統領復帰後すぐに行った行政命令の一つはどれですか？', choices:['増税','国境緊急事態宣言','医療保険改革','軍縮条約の締結'], a:1},
+      {type:'four', q:'トランプ大統領が「ディープステート」と批判した組織とは主にどれですか？', choices:['民間企業','連邦政府・官僚機構','メディア企業','外国政府'], a:1},
+      {type:'tf', q:'トランプはキューバとの国交回復を推進した。', a:false},
+      {type:'tf', q:'トランプはオバマケア（医療保険制度改革法）の廃止・代替を議会に求めたが実現しなかった。', a:true},
+    ]
+  },
+  {
+    id: 'xi', emoji: '🇨🇳', name: '習近平',
+    desc: '中国国家主席・共産党総書記', color: '#e53935',
+    questions: [
+      {type:'four', q:'習近平が生まれた省はどこですか？', choices:['広東省','上海市','北京市','陝西省'], a:3},
+      {type:'four', q:'習近平が国家主席に就任した年はいつですか？', choices:['2008年','2013年','2018年','2003年'], a:1},
+      {type:'four', q:'習近平が掲げる長期的国家目標「中国の夢（中国夢）」の核心的な目標は何ですか？', choices:['GDP世界1位','中華民族の偉大な復興','宇宙開発の覇権','軍事的超大国化'], a:1},
+      {type:'four', q:'習近平が推進する経済・外交構想「一帯一路」において「帯」とは何を指しますか？', choices:['海上シルクロード','陸上シルクロード経済ベルト','鉄道網','航空路'], a:1},
+      {type:'four', q:'習近平の父・習仲勲はどのような人物ですか？', choices:['軍人','作家','革命家・元副総理','教師'], a:2},
+      {type:'four', q:'習近平が提唱する外交理念を表す概念として「人類〇〇共同体」という表現がある。〇〇に入るのは？', choices:['平和','命運','協調','発展'], a:1},
+      {type:'four', q:'習近平が政治思想として体系化した「習近平の新時代の中国の特色ある社会主義思想」が党規約に盛り込まれたのは何年ですか？', choices:['2012年','2017年','2019年','2022年'], a:1},
+      {type:'four', q:'習近平が特に推進した腐敗撲滅キャンペーン「打虎拍蝿」の「虎」は何を指しますか？', choices:['外国勢力','高級官僚','民間企業','地方官吏'], a:1},
+      {type:'four', q:'習近平は国共内戦後に農村に下放された世代を何と呼びますか？', choices:['文革世代','知青世代','改革世代','開放世代'], a:1},
+      {type:'four', q:'2022年の第20回党大会で習近平が実現した前例のない任期とは？', choices:['2期10年','3期目入り','終身執政制度化','4期連続選出'], a:1},
+      {type:'four', q:'習近平が台湾問題で繰り返し表明している立場はどれですか？', choices:['独立を支持','現状維持','平和的統一を目指す','国連決議に委ねる'], a:2},
+      {type:'four', q:'中国の次世代通信技術5Gで世界をリードする企業で、習近平政権が積極的に支援しているのは？', choices:['ZTE','Alibaba','Huawei','Xiaomi'], a:2},
+      {type:'tf', q:'習近平は文化大革命期に農村に送られた「知青（知識青年）」の一人である。', a:true},
+      {type:'tf', q:'習近平はハーバード大学で学んだ経歴がある。', a:false},
+      {type:'tf', q:'習近平は香港の一国二制度維持を強く支持している。', a:false},
+      {type:'tf', q:'習近平は2018年の憲法改正により国家主席の任期制限を撤廃した。', a:true},
+      {type:'tf', q:'習近平の妻・彭麗媛は著名な歌手・軍の文芸工作者である。', a:true},
+      {type:'tf', q:'「一帯一路」構想は2013年に習近平が提唱した。', a:true},
+      {type:'four', q:'中国の「社会信用システム」が目指す主な目的は何ですか？', choices:['民主主義の促進','市民・企業の信頼度評価と管理','外国投資誘致','インターネット検閲強化'], a:1},
+      {type:'four', q:'習近平が2022年の北京冬季五輪を実施した際、欧米諸国が取った抗議手段は？', choices:['ボイコット','外交的ボイコット','選手団の派遣拒否','開催地変更要求'], a:1},
+      {type:'four', q:'中国が「グレートファイアウォール」によって国内でアクセスを遮断しているサービスはどれですか？', choices:['百度（Baidu）','WeChat','Google','アリペイ'], a:2},
+      {type:'tf', q:'習近平は新疆ウイグル自治区での政策について国際社会から人権侵害の批判を受けている。', a:true},
+      {type:'tf', q:'中国は2049年を「中華民族の偉大な復興」の目標年として設定している。', a:true},
+    ]
+  },
+  {
+    id: 'putin', emoji: '🇷🇺', name: 'ウラジーミル・プーチン',
+    desc: 'ロシア大統領', color: '#1565c0',
+    questions: [
+      {type:'four', q:'プーチンが生まれた都市はどこですか？', choices:['モスクワ','レニングラード（現サンクトペテルブルク）','ウラジオストク','ノボシビルスク'], a:1},
+      {type:'four', q:'プーチンが大統領に初めて就任した年はいつですか？', choices:['1995年','2000年','2004年','1999年'], a:1},
+      {type:'four', q:'プーチンがかつて所属していた情報機関はどれですか？', choices:['CIA','MI6','KGB','NSA'], a:2},
+      {type:'four', q:'プーチンの趣味・特技として知られる格闘技は何ですか？', choices:['ボクシング','柔道','空手','レスリング'], a:1},
+      {type:'four', q:'プーチンが2014年に併合したウクライナの地域はどこですか？', choices:['ドンバス','クリミア','ハリコフ','オデッサ'], a:1},
+      {type:'four', q:'プーチンが大統領に就任する前に首相として仕えた大統領は誰ですか？', choices:['ゴルバチョフ','エリツィン','メドベージェフ','チェルノムイルジン'], a:1},
+      {type:'four', q:'プーチンが最初に大統領代行となったのは何年の大晦日ですか？', choices:['1997年','1999年','2001年','2003年'], a:1},
+      {type:'four', q:'プーチン政権下で国営化・影響下に置かれた大手石油会社は？', choices:['ルクオイル','ロスネフチ','ガスプロム（ユコス吸収）','全て正しい'], a:3},
+      {type:'four', q:'プーチンが推進するロシアの外交概念で「ロシア語圏の人々を守る」という論理を何と呼ぶか？', choices:['ユーラシア主義','ルースキー・ミール','スラブ連邦主義','ネオソビエト主義'], a:1},
+      {type:'four', q:'2022年2月にプーチンが開始したウクライナへの軍事行動をロシア政府が公式に呼ぶ名称は？', choices:['宣戦布告','特別軍事作戦','解放作戦','制裁作戦'], a:1},
+      {type:'four', q:'プーチンの親友・側近として知られ、民間軍事会社ワグネルを率いた人物（2023年死亡）は？', choices:['ショイグ','プリゴジン','ゲラシモフ','ラブロフ'], a:1},
+      {type:'four', q:'プーチンが卒業したレニングラード国立大学で専攻した学部は？', choices:['工学部','経済学部','法学部','歴史学部'], a:2},
+      {type:'tf', q:'プーチンはKGB（ソビエト国家保安委員会）の工作員として東ドイツに赴任した経歴がある。', a:true},
+      {type:'tf', q:'プーチンはロシア正教会との関係を特に重視している。', a:true},
+      {type:'tf', q:'プーチンは2008年から2012年まで憲法の規定により大統領職を離れ首相を務めた。', a:true},
+      {type:'tf', q:'プーチンは国際刑事裁判所（ICC）から逮捕状が発行されている。', a:true},
+      {type:'tf', q:'プーチンは2024年の大統領選挙で80%以上の得票率で当選した。', a:true},
+      {type:'tf', q:'プーチンはチェチェン紛争を終息させることに成功した。', a:false},
+      {type:'four', q:'プーチンが署名した「ロシア対外政策概念」において最も重視される地域は？', choices:['欧州','ユーラシア・旧ソ連圏（近外国）','中東','アジア太平洋'], a:1},
+      {type:'four', q:'プーチンが2014年に根拠としたクリミア独立の論理に近いのはどれですか？', choices:['国連決議','コソボ独立の先例','NATO拡大への対抗','住民投票のみ'], a:1},
+      {type:'four', q:'プーチン政権で外務大臣を長く務めている人物は誰ですか？', choices:['セルゲイ・ショイグ','ニコライ・パトルシェフ','セルゲイ・ラブロフ','ドミトリー・メドベージェフ'], a:2},
+      {type:'tf', q:'ロシアはウクライナ侵攻後にフィンランドとスウェーデンがNATOに加盟したことで、NATOとの国境線が大幅に延びた。', a:true},
+      {type:'tf', q:'プーチンはロシア語の他に英語を流暢に話すことで知られる。', a:false},
+    ]
+  },
+  {
+    id: 'takaichi', emoji: '🇯🇵', name: '高市早苗',
+    desc: '日本国首相', color: '#e65100',
+    questions: [
+      {type:'four', q:'高市早苗首相の出身地はどこですか？', choices:['大阪府','奈良県','兵庫県','京都府'], a:1},
+      {type:'four', q:'高市早苗が首相に就任した年はいつですか？', choices:['2021年','2023年','2024年','2025年'], a:3},
+      {type:'four', q:'高市早苗が長年代表を務めた政策グループの名称は？', choices:['清和政策研究会','宏池会','近未来政治研究会','日本の未来を創る会'], a:0},
+      {type:'four', q:'高市早苗が過去に務めた総務大臣時代に特に議論を呼んだ発言は何に関するものでしたか？', choices:['防衛費増額','電波停止','外国人参政権','消費税廃止'], a:1},
+      {type:'four', q:'高市早苗が推進する経済政策「サナエノミクス」の柱の一つとして挙げられるのは？', choices:['積極的財政出動','消費税廃止','地方分権の廃止','福祉削減'], a:0},
+      {type:'four', q:'高市早苗が首相就任前に務めていた主要役職はどれですか？', choices:['外務大臣','財務大臣','経済安全保障担当大臣','防衛大臣'], a:2},
+      {type:'four', q:'高市早苗が卒業した大学はどこですか？', choices:['東京大学','早稲田大学','神戸大学','京都大学'], a:2},
+      {type:'four', q:'高市早苗が所属する自由民主党において長く重要な役割を果たした政策分野はどれですか？', choices:['農業・林業','科学技術・IT政策','外交・安全保障','金融・経済'], a:1},
+      {type:'four', q:'高市早苗の著書「国を守る責任」が論じた主なテーマは？', choices:['経済成長','安全保障と憲法改正','少子化対策','エネルギー政策'], a:1},
+      {type:'four', q:'高市早苗が2021年の自民党総裁選に出馬した際、選挙戦で特に訴えた政策は？', choices:['脱原発','積極財政・危機管理','デジタル化推進','女性活躍推進'], a:1},
+      {type:'tf', q:'高市早苗は日本初の女性首相である。', a:true},
+      {type:'tf', q:'高市早苗は靖国神社への参拝を続けてきたことで知られる。', a:true},
+      {type:'tf', q:'高市早苗は以前、民主党（立憲民主党の前身）に所属していたことがある。', a:false},
+      {type:'tf', q:'高市早苗は憲法改正に積極的な姿勢を示している。', a:true},
+      {type:'tf', q:'高市早苗はアメリカの大学院への留学経験がある。', a:true},
+      {type:'tf', q:'高市早苗は自民党の女性局長を務めたことがある。', a:true},
+      {type:'four', q:'高市早苗が推進してきた「サイバーセキュリティ強化」に関連して重視した政策は？', choices:['5G技術輸出規制','経済安全保障法の整備','個人情報保護法廃止','デジタル円の早期導入'], a:1},
+      {type:'four', q:'高市早苗が総務大臣時代に推進した地方創生に関する政策ツールは？', choices:['ふるさと納税制度の拡充','地方交付税廃止','道州制導入','リモートワーク義務化'], a:0},
+      {type:'four', q:'高市早苗が主張する防衛政策として特に強調されてきたのはどれですか？', choices:['非武装中立','敵基地攻撃能力の保持','日米安保条約廃棄','核武装'], a:1},
+      {type:'tf', q:'高市早苗は2021年自民党総裁選で岸田文雄に敗れた。', a:true},
+      {type:'tf', q:'高市早苗は「選択的夫婦別姓制度」の積極的推進者として知られる。', a:false},
+    ]
+  },
+  {
+    id: 'global', emoji: '🌐', name: 'その他の世界リーダー',
+    desc: 'マクロン・ショルツ・モディ・ほか', color: '#7b1fa2',
+    questions: [
+      {type:'four', q:'フランスのエマニュエル・マクロン大統領が所属する政党（政治運動）の名称は？', choices:['社会党','国民連合（RN）','ルネサンス（前進）','共和党'], a:2},
+      {type:'four', q:'インドのナレンドラ・モディ首相が所属する政党はどれですか？', choices:['国民会議派','インド人民党（BJP）','サパ党','CPI'], a:1},
+      {type:'four', q:'イギリスの現首相キア・スターマーが所属する政党は？', choices:['保守党','自由民主党','労働党','スコットランド国民党'], a:2},
+      {type:'four', q:'ドイツのオラフ・ショルツ首相が所属する政党はどれですか？', choices:['CDU','SPD（社会民主党）','緑の党','FDP'], a:1},
+      {type:'four', q:'カナダのマーク・カーニー首相が率いる政党は？', choices:['保守党','新民主党','自由党','緑の党'], a:2},
+      {type:'four', q:'ブラジルのルイス・イナシオ・ルーラ・ダ・シルバ大統領は、かつて何の労働者出身として有名ですか？', choices:['農業労働者','鉄鋼労働者','石油労働者','靴工場労働者'], a:1},
+      {type:'four', q:'韓国の現大統領（2025年就任）は誰ですか？', choices:['尹錫悦','李在明','韓東勲','洪準杓'], a:1},
+      {type:'four', q:'イスラエルのベンヤミン・ネタニヤフ首相が所属する政党は？', choices:['労働党','メレツ','リクード','青と白'], a:2},
+      {type:'four', q:'南アフリカのシリル・ラマポーザ大統領が所属する政党は？', choices:['民主同盟（DA）','ANC（アフリカ民族会議）','EFF','IFP'], a:1},
+      {type:'four', q:'アルゼンチンのハビエル・ミレイ大統領が掲げる経済政策で特徴的なのは？', choices:['社会主義的再分配','急進的自由市場主義（リバタリアニズム）','輸入代替工業化','外国資本規制'], a:1},
+      {type:'four', q:'トルコのレジェップ・タイイップ・エルドアン大統領が所属する政党は？', choices:['共和人民党（CHP）','公正発展党（AKP）','民族主義行動党（MHP）','善良党（İYİ）'], a:1},
+      {type:'four', q:'国連事務総長（2025年現在）はだれですか？', choices:['コフィ・アナン','潘基文','アントニオ・グテーレス','バン・キムン'], a:2},
+      {type:'tf', q:'マクロン仏大統領は大統領就任前に投資銀行（ロスチャイルド）で働いていた経歴がある。', a:true},
+      {type:'tf', q:'モディ印首相はヒンドゥー民族主義を重視するRSS（民族義勇団）の出身である。', a:true},
+      {type:'tf', q:'スターマー英首相は王室主義者であり、英国王に対し誠実な支持を表明している。', a:true},
+      {type:'tf', q:'ミレイ亜大統領は就任後すぐにアルゼンチンを米ドル化（ドル採用）することを実現した。', a:false},
+      {type:'tf', q:'エルドアン土大統領は2016年のクーデター未遂後、大規模な粛清を行った。', a:true},
+      {type:'tf', q:'G7はフランス・米国・英国・ドイツ・日本・イタリア・カナダの7カ国で構成される。', a:true},
+      {type:'four', q:'ポーランドの現首相として2023年に就任したのは誰ですか？', choices:['ヤロスワフ・カチンスキ','ドナルド・トゥスク','アンジェイ・ドゥダ','マテウシュ・モラビエツキ'], a:1},
+      {type:'four', q:'オーストラリアのアンソニー・アルバニージー首相が所属する政党は？', choices:['保守連合','労働党','緑の党','国民党'], a:1},
+      {type:'four', q:'メキシコの現大統領（2024年就任）で初の女性大統領は誰ですか？', choices:['ロペス・オブラドール','クラウディア・シェインバウム','マルセラ・エブラード','ベアトリス・グティエレス'], a:1},
+      {type:'tf', q:'イタリアのジョルジャ・メローニ首相は欧州右派・保守政党の代表的なリーダーとされる。', a:true},
+      {type:'tf', q:'ネタニヤフ・イスラエル首相は国際刑事裁判所（ICC）から逮捕状が発行されている。', a:true},
+      {type:'four', q:'ウクライナのウォロディミル・ゼレンスキー大統領が大統領就任前に有名だったのは何の仕事？', choices:['弁護士','コメディアン・俳優','ジャーナリスト','実業家'], a:1},
+      {type:'four', q:'サウジアラビアの実権を握るムハンマド・ビン・サルマン皇太子（MBS）の父である国王は？', choices:['ファハド国王','アブドゥッラー国王','サルマン国王','アブドゥルアジーズ国王'], a:2},
+    ]
+  },
+  {
+    id: 'intl', emoji: '🤝', name: '国際関係・外交',
+    desc: 'G7・NATO・国連・外交戦略', color: '#00695c',
+    questions: [
+      {type:'four', q:'NATOの本部が置かれているのはどの国の都市ですか？', choices:['パリ','ワシントンD.C.','ブリュッセル','ジュネーブ'], a:2},
+      {type:'four', q:'G20サミットの参加メンバーとして正しいのはどれですか？', choices:['インド','スイス','ノルウェー','オーストラリア以外の全て'], a:0},
+      {type:'four', q:'国際通貨基金（IMF）の本部がある都市は？', choices:['ニューヨーク','ジュネーブ','ワシントンD.C.','ロンドン'], a:2},
+      {type:'four', q:'SCO（上海協力機構）に加盟していない国はどれですか（2024年時点）？', choices:['ロシア','インド','日本','パキスタン'], a:2},
+      {type:'four', q:'2022年以降ロシアへの制裁を主導した西側同盟の枠組みは？', choices:['ASEAN','G7プラスEU','AU','APEC'], a:1},
+      {type:'four', q:'インド太平洋の安全保障対話「QUAD」の参加国はどれですか？', choices:['日米英豪','日米印豪','日米韓豪','日米印韓'], a:1},
+      {type:'four', q:'AUKUSはどの3カ国による安全保障パートナーシップですか？', choices:['米英豪','米英加','米英NZ','米英日'], a:0},
+      {type:'four', q:'国連安全保障理事会の常任理事国（P5）に含まれない国は？', choices:['フランス','ドイツ','中国','英国'], a:1},
+      {type:'four', q:'2023年にBRICSに新たに加盟した国として正しいのはどれですか？', choices:['サウジアラビア','トルコ','インドネシア','韓国'], a:0},
+      {type:'four', q:'TPP（環太平洋パートナーシップ協定）から脱退したのはどの国ですか？', choices:['中国','オーストラリア','アメリカ（トランプ政権時）','カナダ'], a:2},
+      {type:'four', q:'世界銀行グループの本部が置かれている都市は？', choices:['ジュネーブ','パリ','ワシントンD.C.','ニューヨーク'], a:2},
+      {type:'four', q:'イスラエルとアラブ諸国間の国交正常化協定「アブラハム合意」を仲介した国は？', choices:['フランス','アメリカ','イギリス','国連'], a:1},
+      {type:'tf', q:'日本はNATOの正式加盟国ではないが、NATOと連携協力関係を持つ。', a:true},
+      {type:'tf', q:'ロシアは2022年以降、G8（現G7）から除外されている。', a:true},
+      {type:'tf', q:'中国は世界貿易機関（WTO）に加盟していない。', a:false},
+      {type:'tf', q:'国連の公用語は英語・フランス語・スペイン語・ロシア語・アラビア語・中国語の6言語である。', a:true},
+      {type:'tf', q:'パリ協定はすべてのG20加盟国が批准している。', a:false},
+      {type:'tf', q:'アメリカはバイデン政権下でパリ協定に復帰した。', a:true},
+      {type:'four', q:'ASEAN（東南アジア諸国連合）の本部が置かれている都市は？', choices:['バンコク','シンガポール','ジャカルタ','クアラルンプール'], a:2},
+      {type:'four', q:'2023年に核融合実験で「点火（ignition）」に成功した米国の研究機関は？', choices:['NASA','ローレンス・リバモア国立研究所','MIT','CERN'], a:1},
+      {type:'four', q:'「グローバルサウス」という概念が指すのは主にどの地域の国々ですか？', choices:['先進7カ国（G7）','アフリカ・アジア・ラテンアメリカの途上国','旧ソ連諸国','欧州南部諸国'], a:1},
+      {type:'tf', q:'日本はG7議長国を過去に複数回務めたことがある。', a:true},
+      {type:'tf', q:'国連安全保障理事会では常任理事国1カ国の拒否権発動で決議を否決できる。', a:true},
+      {type:'four', q:'IMF（国際通貨基金）の現専務理事（2023年時点）は誰ですか？', choices:['クリスティーヌ・ラガルド','クリスタリナ・ゲオルギエバ','ジャネット・イエレン','ジム・ヨン・キム'], a:1},
+      {type:'four', q:'「核不拡散条約（NPT）」に加盟していない核保有国として知られる国は？', choices:['フランス','中国','インド','英国'], a:2},
+      {type:'four', q:'世界貿易機関（WTO）の本部が置かれている都市は？', choices:['ニューヨーク','ブリュッセル','ジュネーブ','ウィーン'], a:2},
+      {type:'four', q:'2023年に爆発的な普及を見せた生成AIの代表例ChatGPTを開発した企業は？', choices:['Google','Meta','OpenAI','Microsoft'], a:2},
+      {type:'tf', q:'NATO（北大西洋条約機構）は集団的自衛権を規定した第5条を中核としている。', a:true},
+      {type:'tf', q:'オーストラリアはASEAN（東南アジア諸国連合）の正式加盟国である。', a:false},
+      {type:'four', q:'「グローバルガバナンス」の文脈でOECDが本部を置く都市はどこですか？', choices:['ブリュッセル','ジュネーブ','パリ','ベルリン'], a:2},
+      {type:'tf', q:'G20にはEU（欧州連合）も1つの参加主体として含まれる。', a:true},
+      {type:'four', q:'「SDGs（持続可能な開発目標）」は何カ国の国連加盟国が2015年に採択しましたか？', choices:['100カ国以上','150カ国以上','193カ国（全加盟国）','50カ国'], a:2},
+      {type:'tf', q:'国際連合（UN）はニューヨーク、ジュネーブ、ウィーン、ナイロビに主要事務所を持つ。', a:true},
+    ]
+  },
+];
+
+// ==================== GAME STATE ====================
+let currentGenre = null;
+let questions = [];
+let qIndex = 0;
+let score = 0;
+let timeLeft = 120;
+let timerInterval = null;
+let correctCount = 0;
+let wrongCount = 0;
+let missedList = [];
+let answered = false;
+
+// ==================== INIT ====================
+function init() {
+  renderGenreCards();
+  loadRanking();
+}
+
+function renderGenreCards() {
+  const grid = document.getElementById('genre-grid');
+  grid.innerHTML = '';
+  GENRES.forEach((g, i) => {
+    const card = document.createElement('div');
+    card.className = 'genre-card';
+    card.id = 'genre-card-' + i;
+    card.innerHTML = `
+      <div class="genre-emoji">${g.emoji}</div>
+      <div class="genre-name">${g.name}</div>
+      <div class="genre-desc">${g.desc}</div>
+      <div class="genre-count">問題数: ${g.questions.length}問収録</div>
+    `;
+    card.addEventListener('click', () => {
+      selectGenreAndStart(i);
+    });
+    grid.appendChild(card);
+  });
+}
+
+function selectGenreAndStart(idx) {
+  GENRES.forEach((_, i) => {
+    const c = document.getElementById('genre-card-' + i);
+    if (c) c.classList.remove('selected');
+  });
+  const selected = document.getElementById('genre-card-' + idx);
+  if (selected) selected.classList.add('selected');
+  currentGenre = GENRES[idx];
+  // 即スタート
+  startGame();
+}
+
+// ==================== START ====================
+function startGame() {
+  if (!currentGenre) {
+    alert('ジャンルを選択してください');
+    return;
+  }
+  const playerName = document.getElementById('player-name').value.trim() || 'ゲスト';
+
+  // prepare questions
+  const pool = [...currentGenre.questions];
+  shuffle(pool);
+  questions = pool.slice(0, 10);
+  // shuffle choices for four type
+  questions = questions.map(q => {
+    if (q.type === 'four') {
+      const indexed = q.choices.map((c, i) => ({text: c, orig: i}));
+      shuffle(indexed);
+      const newCorrect = indexed.findIndex(x => x.orig === q.a);
+      return {...q, choices: indexed.map(x => x.text), a: newCorrect};
+    }
+    return q;
+  });
+
+  qIndex = 0;
+  score = 0;
+  timeLeft = 120;
+  correctCount = 0;
+  wrongCount = 0;
+  missedList = [];
+
+  showScreen('game');
+  renderQuestion();
+  startTimer();
+}
+
+// ==================== QUESTION ====================
+function renderQuestion() {
+  answered = false;
+  const q = questions[qIndex];
+  // update header
+  document.getElementById('q-num').textContent = `Q${qIndex+1} / 10`;
+  document.getElementById('score-display').textContent = `${score} pt`;
+  document.getElementById('progress-bar').style.width = `${(qIndex / 10) * 100}%`;
+  // type badge
+  const badge = document.getElementById('q-type-badge');
+  if (q.type === 'four') {
+    badge.textContent = '4択';
+    badge.className = 'q-type-badge four';
+  } else {
+    badge.textContent = '○ × 問題';
+    badge.className = 'q-type-badge tf';
+  }
+  document.getElementById('q-text').textContent = q.q;
+
+  const grid = document.getElementById('choices-grid');
+  grid.innerHTML = '';
+  const feedback = document.getElementById('feedback-box');
+  feedback.textContent = '';
+  feedback.className = 'feedback-box';
+  const btnNext = document.getElementById('btn-next');
+  btnNext.className = 'btn-next';
+
+  if (q.type === 'four') {
+    grid.className = 'choices-grid four-cols';
+    const labels = ['A','B','C','D'];
+    q.choices.forEach((ch, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.innerHTML = `<span style="color:var(--muted);margin-right:6px">${labels[i]}</span>${ch}`;
+      btn.onclick = () => answer(i);
+      grid.appendChild(btn);
+    });
+  } else {
+    grid.className = 'choices-grid two-cols';
+    const opts = [['○', true], ['×', false]];
+    opts.forEach(([label, val]) => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn tf-btn';
+      btn.textContent = label;
+      btn.onclick = () => answer(val);
+      grid.appendChild(btn);
+    });
+  }
+}
+
+function answer(selected) {
+  if (answered) return;
+  answered = true;
+  const q = questions[qIndex];
+  const correct = q.a;
+  const grid = document.getElementById('choices-grid');
+  const buttons = grid.querySelectorAll('.choice-btn');
+  const feedback = document.getElementById('feedback-box');
+
+  let isCorrect;
+  if (q.type === 'four') {
+    isCorrect = selected === correct;
+    buttons.forEach((btn, i) => {
+      btn.disabled = true;
+      if (i === correct) btn.classList.add('correct');
+      else if (i === selected && !isCorrect) btn.classList.add('wrong');
+    });
+  } else {
+    isCorrect = selected === correct;
+    buttons.forEach(btn => {
+      btn.disabled = true;
+      const btnVal = btn.textContent === '○' ? true : false;
+      if (btnVal === correct) btn.classList.add('correct');
+      else if (btnVal === selected && !isCorrect) btn.classList.add('wrong');
+    });
+  }
+
+  if (isCorrect) {
+    score += 10;
+    timeLeft = Math.min(timeLeft + 5, 240);
+    feedback.textContent = '✅ 正解！ +10点 / +5秒';
+    feedback.className = 'feedback-box ok show';
+    correctCount++;
+  } else {
+    timeLeft = Math.max(timeLeft - 5, 0);
+    const correctAns = q.type === 'four' ? q.choices[correct] : (correct ? '○' : '×');
+    feedback.textContent = `❌ 不正解 ／ 正解：${correctAns}（−5秒）`;
+    feedback.className = 'feedback-box ng show';
+    wrongCount++;
+    missedList.push({q: q.q, correct: correctAns});
+  }
+
+  document.getElementById('score-display').textContent = `${score} pt`;
+
+  const btnNext = document.getElementById('btn-next');
+  btnNext.className = 'btn-next show';
+
+  if (qIndex === 9) {
+    btnNext.textContent = '結果を見る 🏆';
+  } else {
+    btnNext.textContent = '次の問題へ →';
+  }
+}
+
+function nextQuestion() {
+  qIndex++;
+  if (qIndex >= 10 || qIndex >= questions.length) {
+    endGame();
+  } else {
+    renderQuestion();
+  }
+}
+
+// ==================== TIMER ====================
+function startTimer() {
+  clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimerDisplay();
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      endGame(true);
+    }
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const el = document.getElementById('timer-num');
+  el.textContent = timeLeft;
+  el.className = 'timer-num';
+  if (timeLeft <= 10) el.classList.add('danger');
+  else if (timeLeft <= 30) el.classList.add('warn');
+}
+
+// ==================== END ====================
+function endGame(timeout = false) {
+  clearInterval(timerInterval);
+  const bonus = timeout ? 0 : Math.max(timeLeft, 0);
+  const total = score + bonus;
+
+  // save ranking
+  const playerName = document.getElementById('player-name').value.trim() || 'ゲスト';
+  saveScore(playerName, currentGenre.name, total);
+
+  // show result
+  showScreen('result');
+  document.getElementById('total-score').textContent = total;
+  document.getElementById('res-correct').textContent = correctCount;
+  document.getElementById('res-wrong').textContent = wrongCount;
+  document.getElementById('res-bonus').textContent = `+${bonus}`;
+
+  // rank badge
+  const pct = total / (100 + 120);
+  let rankHTML = '';
+  if (pct >= 0.8) rankHTML = '<span class="rank-badge rank-s">★ RANK S</span>';
+  else if (pct >= 0.6) rankHTML = '<span class="rank-badge rank-a">▲ RANK A</span>';
+  else if (pct >= 0.4) rankHTML = '<span class="rank-badge rank-b">◆ RANK B</span>';
+  else rankHTML = '<span class="rank-badge rank-c">● RANK C</span>';
+  document.getElementById('rank-badge-wrap').innerHTML = rankHTML;
+
+  // missed
+  const missedSection = document.getElementById('missed-section');
+  const missedListEl = document.getElementById('missed-list');
+  if (missedList.length === 0) {
+    missedSection.style.display = 'none';
+  } else {
+    missedSection.style.display = 'block';
+    missedListEl.innerHTML = '';
+    missedList.forEach((m, i) => {
+      const div = document.createElement('div');
+      div.className = 'missed-item';
+      div.innerHTML = `
+        <div class="q">Q${i+1}. ${m.q}</div>
+        <div class="right-ans">✅ 正解：${m.correct}</div>
+      `;
+      missedListEl.appendChild(div);
+    });
+  }
+}
+
+// ==================== RANKING ====================
+function saveScore(name, genre, total) {
+  let ranking = JSON.parse(localStorage.getItem('wlq_ranking') || '[]');
+  ranking.push({name, genre, score: total, date: new Date().toLocaleDateString('ja-JP')});
+  ranking.sort((a, b) => b.score - a.score);
+  ranking = ranking.slice(0, 10);
+  localStorage.setItem('wlq_ranking', JSON.stringify(ranking));
+}
+
+function loadRanking() {
+  const ranking = JSON.parse(localStorage.getItem('wlq_ranking') || '[]');
+  const list = document.getElementById('ranking-list');
+  if (!list) return;
+  if (ranking.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:10px">まだ記録がありません</div>';
+    return;
+  }
+  list.innerHTML = '';
+  ranking.forEach((r, i) => {
+    const row = document.createElement('div');
+    row.className = `ranking-row rank-${i+1}`;
+    row.innerHTML = `
+      <div class="rank-num">${i+1}</div>
+      <div class="rank-name">${r.name}<div class="rank-genre">${r.genre} · ${r.date}</div></div>
+      <div class="rank-score">${r.score}pt</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function toggleRanking() {
+  const el = document.getElementById('ranking-inline');
+  if (el.style.display === 'none' || el.style.display === '') {
+    loadRanking();
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+// ==================== NAV ====================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+function goTop() {
+  clearInterval(timerInterval);
+  showScreen('top');
+  loadRanking();
+}
+
+function retryGame() {
+  if (currentGenre) startGame();
+  else goTop();
+}
+
+// ==================== UTILS ====================
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ==================== BOOT ====================
+init();
+</script>
+</body>
+</html>
