@@ -2,523 +2,1184 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌍 世界のリーダークイズ道場</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>世界のリーダーズクイズ道場</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;700;900&family=Noto+Sans+JP:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<script src="https://pecpec37-gift.github.io/portal/stamp.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Yusei+Magic&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#04080c;--bg2:#070d14;--surface:#0c1520;--surface2:#12202e;
-  --border:rgba(71,85,105,0.3);
-  --navy:#1e3a5f;--blue:#1d4ed8;--blue2:#3b82f6;--blue3:#93c5fd;
-  --slate:#94a3b8;--slate2:#cbd5e1;
-  --red:#dc2626;--red2:#ef4444;
-  --gold:#d97706;--gold2:#f59e0b;--gold3:#fde68a;
-  --green:#10b981;
-  --text:#f0f4f8;--text2:rgba(240,244,248,0.7);--text3:rgba(240,244,248,0.38);
-  --radius:6px;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{scroll-behavior:smooth;}
-body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 10% 10%,rgba(29,78,216,0.1) 0%,transparent 45%),radial-gradient(ellipse at 90% 90%,rgba(220,38,38,0.08) 0%,transparent 45%);pointer-events:none;z-index:0;}
-.screen{display:none;position:relative;z-index:1;}.screen.active{display:block;}
-#screen-top{min-height:100vh;}
-.top-hero{background:linear-gradient(160deg,#080f1c 0%,#04080c 55%,#020406 100%);padding:52px 24px 44px;text-align:center;border-bottom:1px solid var(--border);position:relative;overflow:hidden;}
-.top-hero::before{content:'🌍';position:absolute;right:-10px;bottom:-20px;font-size:200px;opacity:0.04;pointer-events:none;}
-.top-hero::after{content:'🏛️';position:absolute;left:10px;top:10px;font-size:120px;opacity:0.035;pointer-events:none;}
-.top-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.22em;color:var(--slate2);text-transform:uppercase;margin-bottom:12px;}
-.top-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:clamp(30px,7vw,58px);line-height:1.1;color:var(--text);margin-bottom:8px;}
-.top-title span{color:var(--gold3);}
-.top-sub{font-size:13px;color:var(--text2);letter-spacing:0.06em;margin-bottom:28px;}
-.top-note{font-size:11px;color:var(--text3);background:rgba(71,85,105,0.15);border:1px solid rgba(71,85,105,0.25);border-radius:4px;padding:8px 14px;margin-bottom:14px;display:inline-block;}
-.top-rule{display:inline-block;background:rgba(29,78,216,0.07);border:1px solid rgba(29,78,216,0.2);border-radius:6px;padding:14px 20px;text-align:left;font-size:12px;line-height:2;color:var(--text2);}
-.top-rule strong{color:var(--blue3);}
-.genres-wrap{max-width:920px;margin:0 auto;padding:32px 20px 20px;}
-.genres-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
-.genres-label::after{content:'';flex:1;height:1px;background:var(--border);}
-.genres-hint{font-size:12px;color:var(--gold3);background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2);border-radius:4px;padding:8px 14px;margin-bottom:20px;text-align:center;letter-spacing:0.04em;}
-.genres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:24px;}
-.genre-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 18px;cursor:pointer;transition:transform 0.12s,box-shadow 0.12s,border-color 0.12s;position:relative;overflow:hidden;}
-.genre-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(29,78,216,0.07),transparent);opacity:0;transition:opacity 0.15s;}
-.genre-card:hover{transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.5);border-color:rgba(148,163,184,0.45);}
-.genre-card:hover::before{opacity:1;}
-.genre-accent{position:absolute;top:0;left:0;right:0;height:3px;border-radius:6px 6px 0 0;}
-.genre-icon{font-size:30px;line-height:1;margin-bottom:8px;display:block;}
-.genre-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;margin-bottom:4px;color:var(--text);}
-.genre-desc{font-size:11px;color:var(--text3);margin-bottom:4px;line-height:1.6;}
-.genre-count{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
-.genre-start{position:absolute;top:14px;right:14px;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--slate2);opacity:0;transition:opacity 0.15s;}
-.genre-card:hover .genre-start{opacity:1;}
-.ranking-btn-wrap{text-align:center;padding:8px 0 36px;}
-.ranking-btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.12em;padding:10px 24px;background:none;border:1px solid var(--border);color:var(--text3);border-radius:3px;cursor:pointer;transition:all 0.15s;}
-.ranking-btn:hover{border-color:var(--gold3);color:var(--gold3);}
-#screen-intro{min-height:100vh;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;}
-#screen-intro.active{display:flex;}
-.intro-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px 28px;width:100%;max-width:420px;text-align:center;}
-.intro-icon{font-size:52px;margin-bottom:10px;display:block;}
-.intro-name{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;margin-bottom:4px;color:var(--gold3);}
-.intro-desc{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.7;}
-.intro-rule{font-size:12px;line-height:1.9;color:var(--text2);text-align:left;background:rgba(29,78,216,0.07);border-radius:6px;padding:12px 14px;margin-bottom:20px;}
-.intro-rule strong{color:var(--blue3);}
-.name-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:6px;text-align:left;}
-.name-input{width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:'Noto Sans JP',sans-serif;font-size:14px;margin-bottom:16px;outline:none;transition:border-color 0.15s;}
-.name-input:focus{border-color:var(--blue2);}
-.name-input::placeholder{color:var(--text3);}
-.start-btn{width:100%;padding:14px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:16px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s,transform 0.1s;letter-spacing:0.04em;}
-.start-btn:hover{background:var(--blue2);}
-.start-btn:active{transform:scale(0.98);}
-.back-link{margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);cursor:pointer;transition:color 0.15s;background:none;border:none;}
-.back-link:hover{color:var(--text);}
-#screen-quiz{min-height:100vh;}
-.quiz-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:12px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:10;}
-.quiz-progress{flex:1;height:3px;background:rgba(29,78,216,0.15);border-radius:2px;overflow:hidden;min-width:60px;}
-.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--gold2));border-radius:2px;transition:width 0.3s;}
-.quiz-qnum{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);white-space:nowrap;letter-spacing:0.08em;}
-.quiz-score{font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--gold3);white-space:nowrap;}
-.quiz-timer-wrap{display:flex;align-items:center;gap:5px;}
-.quiz-timer{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--gold3);min-width:40px;text-align:right;transition:color 0.3s;}
-.quiz-timer.danger{color:#ef4444;animation:pulse 0.5s infinite alternate;}
-@keyframes pulse{from{opacity:1;}to{opacity:0.5;}}
-.quiz-timer-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);letter-spacing:0.1em;}
-.quiz-body{max-width:640px;margin:0 auto;padding:28px 20px 40px;}
-.quiz-type-badge{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.16em;padding:3px 10px;border-radius:3px;display:inline-block;margin-bottom:14px;text-transform:uppercase;}
-.quiz-type-badge.type-4{background:rgba(29,78,216,0.15);color:var(--blue2);}
-.quiz-type-badge.type-ox{background:rgba(16,185,129,0.12);color:#34d399;}
-.quiz-q{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:clamp(15px,3.8vw,19px);line-height:1.7;margin-bottom:22px;color:var(--text);}
-.choices{display:flex;flex-direction:column;gap:10px;}
-.choice-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:13px 16px;text-align:left;font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--text);cursor:pointer;transition:all 0.12s;display:flex;align-items:center;gap:10px;}
-.choice-btn:hover:not(:disabled){background:var(--surface2);border-color:rgba(148,163,184,0.5);transform:translateX(3px);}
-.choice-btn:disabled{cursor:default;}
-.choice-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;color:#34d399;}
-.choice-btn.wrong{background:rgba(220,38,38,0.1);border-color:#dc2626;color:#f87171;}
-.choice-label{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);min-width:18px;flex-shrink:0;}
-.ox-choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-.ox-btn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:28px 16px;font-size:36px;cursor:pointer;transition:all 0.12s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;}
-.ox-btn span{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.1em;}
-.ox-btn:hover:not(:disabled){transform:scale(1.03);border-color:rgba(148,163,184,0.5);}
-.ox-btn:disabled{cursor:default;}
-.ox-btn.correct{background:rgba(16,185,129,0.12);border-color:#10b981;}
-.ox-btn.wrong{background:rgba(220,38,38,0.1);border-color:#dc2626;}
-.feedback-bar{margin-top:14px;padding:12px 16px;border-radius:6px;font-size:13px;font-weight:700;opacity:0;transition:opacity 0.2s;min-height:44px;}
-.feedback-bar.show{opacity:1;}
-.feedback-bar.ok{background:rgba(16,185,129,0.1);color:#34d399;border:1px solid rgba(16,185,129,0.28);}
-.feedback-bar.ng{background:rgba(220,38,38,0.08);color:#f87171;border:1px solid rgba(220,38,38,0.22);}
-.next-btn{margin-top:14px;width:100%;padding:12px;background:var(--blue);color:#fff;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:15px;border:none;border-radius:6px;cursor:pointer;transition:background 0.15s;display:none;}
-.next-btn.show{display:block;}
-.next-btn:hover{background:var(--blue2);}
-#screen-result{min-height:100vh;display:none;flex-direction:column;align-items:center;padding:40px 20px 60px;}
-#screen-result.active{display:flex;}
-.result-box{width:100%;max-width:520px;}
-.result-genre{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;color:var(--text3);text-transform:uppercase;margin-bottom:8px;text-align:center;}
-.result-score-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;text-align:center;margin-bottom:20px;}
-.result-medal{font-size:48px;margin-bottom:8px;display:block;}
-.result-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:64px;line-height:1;color:var(--gold3);}
-.result-score-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.16em;color:var(--text3);margin-bottom:16px;text-transform:uppercase;}
-.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px;}
-.result-stat{background:var(--bg2);border-radius:6px;padding:12px 8px;text-align:center;}
-.result-stat-val{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:24px;color:var(--blue3);}
-.result-stat-val.green{color:#34d399;}
-.result-stat-val.gold{color:var(--gold3);}
-.result-stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;color:var(--text3);margin-top:2px;}
-.result-actions{display:flex;gap:10px;margin-bottom:24px;}
-.result-btn{flex:1;padding:12px;font-family:'Zen Kaku Gothic New',sans-serif;font-weight:700;font-size:14px;border-radius:6px;cursor:pointer;transition:all 0.15s;}
-.result-btn-primary{background:var(--blue);color:#fff;border:none;}
-.result-btn-primary:hover{background:var(--blue2);}
-.result-btn-secondary{background:none;color:var(--text2);border:1px solid var(--border);}
-.result-btn-secondary:hover{border-color:var(--blue2);color:var(--blue2);}
-.wrong-section{width:100%;max-width:520px;}
-.wrong-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
-.wrong-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:10px;}
-.wrong-item-num{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.14em;color:var(--text3);margin-bottom:6px;}
-.wrong-item-q{font-size:14px;line-height:1.6;color:var(--text);margin-bottom:10px;font-weight:700;}
-.wrong-item-ans{display:flex;align-items:flex-start;gap:8px;font-size:13px;}
-.wrong-item-ans-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--green);background:rgba(16,185,129,0.1);padding:2px 7px;border-radius:2px;white-space:nowrap;margin-top:1px;}
-.wrong-item-ans-text{color:#34d399;line-height:1.5;}
-.portal-back{display:block;text-align:center;margin-top:28px;font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.1em;color:var(--text3);text-decoration:none;padding:10px 20px;border:1px solid var(--border);border-radius:3px;transition:all 0.15s;}
-.portal-back:hover{border-color:var(--blue2);color:var(--blue2);}
-#screen-ranking{min-height:100vh;padding:40px 20px 60px;}
-.ranking-wrap{max-width:600px;margin:0 auto;}
-.ranking-top{display:flex;align-items:center;gap:12px;margin-bottom:24px;}
-.ranking-title{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:22px;color:var(--gold3);flex:1;}
-.ranking-back{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:3px;padding:6px 14px;cursor:pointer;transition:all 0.15s;}
-.ranking-back:hover{border-color:var(--gold3);color:var(--gold3);}
-.ranking-tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-bottom:20px;border-bottom:1px solid var(--border);}
-.ranking-tabs::-webkit-scrollbar{display:none;}
-.ranking-tab{flex-shrink:0;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;padding:10px 12px;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);cursor:pointer;transition:all 0.15s;white-space:nowrap;}
-.ranking-tab.active{color:var(--gold2);border-bottom-color:var(--gold2);}
-.ranking-list{display:flex;flex-direction:column;gap:6px;}
-.ranking-empty{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);text-align:center;padding:32px;letter-spacing:0.1em;}
-.ranking-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:12px 16px;}
-.ranking-row.top1{border-color:rgba(245,158,11,0.5);background:rgba(245,158,11,0.05);}
-.ranking-row.top2{border-color:rgba(200,200,200,0.25);}
-.ranking-row.top3{border-color:rgba(180,100,30,0.3);}
-.ranking-pos{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:18px;min-width:28px;color:var(--text3);}
-.ranking-pos.gold{color:#f59e0b;}.ranking-pos.silver{color:#9ca3af;}.ranking-pos.bronze{color:#b45309;}
-.ranking-name{flex:1;font-size:14px;font-weight:700;color:var(--text);}
-.ranking-score{font-family:'Zen Kaku Gothic New',sans-serif;font-weight:900;font-size:20px;color:var(--gold3);}
-.ranking-date{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text3);margin-left:6px;}
-.ranking-del{font-size:11px;color:var(--text3);background:none;border:none;cursor:pointer;padding:4px 8px;margin-top:12px;font-family:'Share Tech Mono',monospace;letter-spacing:0.08em;transition:color 0.15s;}
-.ranking-del:hover{color:#ef4444;}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg2);color:var(--gold3);font-family:'Share Tech Mono',monospace;font-size:12px;padding:10px 20px;border-radius:6px;border:1px solid var(--gold2);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.portal-fixed-btn{position:fixed;bottom:20px;left:20px;z-index:9999;display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(4,8,12,0.92);color:var(--blue3);font-family:'Share Tech Mono',monospace;font-size:12px;letter-spacing:0.08em;border-radius:4px;border:1px solid rgba(29,78,216,0.35);text-decoration:none;backdrop-filter:blur(6px);box-shadow:0 4px 16px rgba(0,0,0,0.5);transition:all 0.15s;white-space:nowrap;}
-.portal-fixed-btn:hover{background:rgba(4,8,12,0.98);border-color:rgba(59,130,246,0.7);transform:translateY(-1px);}
-@media(max-width:480px){.genres-grid{grid-template-columns:1fr 1fr;}.result-actions{flex-direction:column;}.portal-fixed-btn{bottom:14px;left:14px;padding:8px 14px;font-size:11px;}}
+  :root{
+    --bg:#0b0a0c;
+    --bg2:#171115;
+    --bg3:#221219;
+    --red:#ff0033;
+    --red-soft:#ff6b86;
+    --red-deep:#c20026;
+    --gold:#ffce3a;
+    --gold-soft:#ffe08a;
+    --white:#f5f3f4;
+    --dim:#b3a9af;
+    --green:#3fcf86;
+    --shadow:rgba(0,0,0,.5);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;height:100%;}
+  body{
+    font-family:'Noto Sans JP',sans-serif;
+    background:radial-gradient(120% 80% at 50% -10%,#2a0a14 0%,var(--bg) 60%);
+    color:var(--white);
+    min-height:100dvh;
+    overflow-x:hidden;
+    position:relative;
+  }
+  #bgCanvas{position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:.85;pointer-events:none;}
+  .wrap{
+    position:relative;z-index:1;
+    max-width:680px;margin:0 auto;
+    padding:clamp(12px,3.5vw,28px) clamp(12px,4vw,24px) 48px;
+    min-height:100dvh;
+  }
+  .screen{display:none;animation:fade .35s ease;}
+  .screen.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ===== Header / Title ===== */
+  .crest{text-align:center;margin-bottom:clamp(14px,3vw,22px);}
+  .crest .seal{
+    display:inline-block;font-size:clamp(11px,2.8vw,13px);letter-spacing:.22em;
+    color:var(--red-soft);border:1px solid var(--red);border-radius:30px;
+    padding:5px 16px;margin-bottom:16px;background:rgba(255,0,51,.08);
+    box-shadow:0 0 14px rgba(255,0,51,.25);font-weight:700;
+  }
+  h1{
+    font-family:'Dela Gothic One',sans-serif;
+    font-size:clamp(30px,9.5vw,56px);font-weight:400;margin:0;line-height:1.1;letter-spacing:.005em;
+    color:var(--white);
+    text-shadow:0 0 22px rgba(255,0,51,.45),0 0 40px rgba(255,206,58,.12);
+  }
+  h1 .yt{color:var(--red);text-shadow:0 0 18px rgba(255,0,51,.7);}
+  h1 .dojo{color:var(--gold);text-shadow:0 0 18px rgba(255,206,58,.6);}
+  .subtitle{margin-top:14px;color:var(--dim);font-size:clamp(13px,3.4vw,16px);letter-spacing:.04em;line-height:1.6;}
+  .datenote{
+    display:inline-block;margin-top:12px;font-size:clamp(11px,3vw,13px);font-weight:700;
+    color:var(--gold-soft);background:rgba(255,206,58,.08);border:1px solid rgba(255,206,58,.3);
+    border-radius:30px;padding:6px 15px;letter-spacing:.03em;
+  }
+
+  .howto{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));
+    border:1px solid rgba(255,0,51,.28);border-radius:16px;
+    padding:clamp(14px,3.5vw,20px);margin:clamp(16px,4vw,26px) 0;
+    box-shadow:0 6px 22px var(--shadow);
+  }
+  .howto h3{margin:0 0 10px;color:var(--red-soft);font-size:clamp(15px,3.8vw,17px);font-weight:900;letter-spacing:.04em;}
+  .howto ul{margin:0;padding-left:1.2em;line-height:1.9;font-size:clamp(13px,3.4vw,15px);color:#ece6e9;}
+  .howto ul b{color:var(--gold-soft);}
+  .howto .tap-hint{
+    margin-top:14px;text-align:center;font-weight:700;color:var(--red-soft);
+    font-size:clamp(15px,4vw,18px);letter-spacing:.03em;font-family:'Yusei Magic',sans-serif;
+  }
+  .howto .tap-hint span{display:inline-block;animation:pulse 1.5s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);opacity:.9;}50%{transform:scale(1.07);opacity:1;}}
+
+  .section-label{
+    text-align:center;color:var(--red-soft);font-size:clamp(13px,3.4vw,15px);
+    letter-spacing:.2em;margin:6px 0 14px;font-weight:700;
+  }
+  .section-label::before,.section-label::after{content:"—　";color:rgba(255,0,51,.5);}
+  .section-label::after{content:"　—";}
+
+  /* ===== Genre cards ===== */
+  .genres{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(10px,2.6vw,14px);}
+  .gcard{
+    background:linear-gradient(155deg,#27141b,#1a0f14);
+    border:1px solid rgba(255,0,51,.28);border-radius:16px;
+    padding:clamp(16px,4vw,22px) clamp(10px,3vw,16px) clamp(22px,4.6vw,26px);
+    cursor:pointer;text-align:center;position:relative;overflow:hidden;
+    transition:transform .15s ease,border-color .2s ease,box-shadow .2s ease;
+  }
+  .gcard:active{transform:scale(.97);}
+  .gcard:hover{border-color:var(--red);box-shadow:0 8px 24px var(--shadow),0 0 0 1px rgba(255,0,51,.25) inset;}
+  .gcard .ji{font-size:clamp(32px,9.5vw,46px);line-height:1;filter:drop-shadow(0 2px 10px rgba(255,0,51,.35));}
+  .gcard .nm{margin-top:8px;font-weight:900;font-size:clamp(13px,3.7vw,16px);color:var(--white);}
+  .gcard .ct{margin-top:4px;font-size:11px;color:var(--dim);}
+  .gcard::after{content:"クリックで即スタート";position:absolute;left:0;right:0;bottom:7px;font-size:10px;color:var(--red-soft);opacity:.9;letter-spacing:.04em;}
+
+  .footer-row{display:flex;justify-content:center;margin-top:26px;}
+  .btn{
+    font-family:'Noto Sans JP',sans-serif;font-weight:700;cursor:pointer;border:none;
+    border-radius:11px;padding:13px 22px;font-size:15px;transition:transform .12s ease,filter .2s ease;
+  }
+  .btn:active{transform:scale(.96);}
+  .btn-ghost{background:transparent;border:1px solid var(--dim);color:var(--dim);}
+  .btn-ghost:hover{border-color:var(--red-soft);color:var(--red-soft);}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),#e0a91f);color:#2a1f04;box-shadow:0 5px 18px rgba(255,206,58,.32);}
+  .btn-crimson{background:linear-gradient(135deg,var(--red),var(--red-deep));color:#fff;box-shadow:0 5px 18px rgba(255,0,51,.38);}
+  .btn-block{width:100%;}
+
+  /* ===== Modal ===== */
+  .modal-bg{
+    position:fixed;inset:0;z-index:50;background:rgba(6,4,6,.8);
+    display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);
+  }
+  .modal-bg.show{display:flex;animation:fade .25s ease;}
+  .modal{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));
+    border:1px solid var(--red);border-radius:20px;max-width:380px;width:100%;
+    padding:26px 22px;text-align:center;box-shadow:0 18px 54px rgba(0,0,0,.65);
+  }
+  .modal .ji{font-size:56px;line-height:1;}
+  .modal h2{margin:10px 0 4px;font-size:22px;font-weight:900;}
+  .modal p{margin:6px 0 0;color:var(--dim);font-size:14px;line-height:1.7;}
+  .modal .rules{margin:16px 0 20px;font-size:13px;color:#ece6e9;line-height:1.85;background:rgba(0,0,0,.22);border-radius:10px;padding:12px;}
+  .modal-btns{display:flex;gap:10px;}
+  .modal-btns .btn{flex:1;}
+
+  /* ===== Quiz ===== */
+  .hud{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;}
+  .hud .pill{
+    background:rgba(0,0,0,.32);border:1px solid rgba(255,0,51,.3);border-radius:30px;
+    padding:8px 16px;font-weight:700;font-size:clamp(13px,3.6vw,15px);
+  }
+  .hud .pill .lab{color:var(--dim);font-size:11px;margin-right:6px;font-weight:500;}
+  .hud .score-pill{color:var(--gold);}
+  .hud .time-pill{color:var(--white);}
+  .hud .time-pill.warn{color:var(--red-soft);animation:blink .8s steps(2,end) infinite;}
+  @keyframes blink{50%{opacity:.4;}}
+  .timebar{height:6px;border-radius:6px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:6px;}
+  .timebar .fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--red-soft),var(--red));width:100%;transition:width 1s linear;}
+  .progress{text-align:center;font-size:12px;color:var(--dim);margin-bottom:14px;letter-spacing:.1em;}
+
+  .qcard{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));
+    border:1px solid rgba(255,0,51,.25);border-radius:18px;
+    padding:clamp(18px,5vw,30px) clamp(16px,4.5vw,26px);box-shadow:0 8px 28px var(--shadow);
+    min-height:230px;display:flex;flex-direction:column;
+  }
+  .qtag{
+    display:inline-block;font-size:11px;letter-spacing:.12em;color:var(--red-soft);
+    border:1px solid rgba(255,0,51,.4);border-radius:30px;padding:3px 12px;margin-bottom:14px;font-weight:700;
+  }
+  .qtype{float:right;font-size:11px;color:var(--dim);margin-top:4px;}
+  .qtext{
+    font-size:clamp(17px,4.8vw,22px);font-weight:700;line-height:1.7;margin-bottom:4px;
+    min-height:2.4em;transition:opacity .3s ease;
+  }
+  .qtext::after{content:"▌";color:var(--red);animation:caret 1s steps(2,end) infinite;margin-left:2px;}
+  .qtext.done::after,.qtext.fade-out::after{content:"";}
+  @keyframes caret{50%{opacity:0;}}
+  .qtext.fade-out{opacity:0;}
+
+  /* buzzer */
+  .buzz-wrap{margin-top:auto;padding-top:20px;text-align:center;}
+  .btn-buzz{
+    font-family:'Dela Gothic One',sans-serif;font-size:clamp(20px,6vw,26px);font-weight:400;
+    color:#fff;background:radial-gradient(circle at 50% 35%,#ff3a5e,var(--red) 55%,var(--red-deep));
+    border:none;border-radius:50%;width:clamp(130px,38vw,150px);height:clamp(130px,38vw,150px);
+    cursor:pointer;box-shadow:0 8px 26px rgba(255,0,51,.5),inset 0 -6px 14px rgba(0,0,0,.3),inset 0 4px 10px rgba(255,255,255,.25);
+    transition:transform .1s ease;letter-spacing:.02em;line-height:1.25;animation:buzzpulse 1.6s ease-in-out infinite;
+  }
+  .btn-buzz:active{transform:scale(.92);}
+  @keyframes buzzpulse{0%,100%{box-shadow:0 8px 26px rgba(255,0,51,.45),inset 0 -6px 14px rgba(0,0,0,.3),inset 0 4px 10px rgba(255,255,255,.25);}50%{box-shadow:0 8px 38px rgba(255,0,51,.85),inset 0 -6px 14px rgba(0,0,0,.3),inset 0 4px 10px rgba(255,255,255,.25);}}
+  .buzz-hint{margin-top:12px;font-size:12px;color:var(--dim);letter-spacing:.05em;}
+
+  .choices{display:none;gap:10px;margin-top:20px;}
+  .choices.show{display:grid;animation:fade .3s ease;}
+  .choices.ox{grid-template-columns:1fr 1fr;}
+  .choice{
+    font-family:'Noto Sans JP',sans-serif;font-size:clamp(15px,4.2vw,18px);font-weight:600;
+    background:#211118;border:1.5px solid rgba(255,0,51,.26);color:var(--white);
+    border-radius:13px;padding:15px 16px;cursor:pointer;text-align:center;
+    transition:transform .12s ease,background .2s ease,border-color .2s ease;min-height:54px;
+    display:flex;align-items:center;justify-content:center;line-height:1.4;
+  }
+  .choice:active{transform:scale(.97);}
+  .choice:focus{outline:none;}
+  .choice:focus-visible{outline:none;}
+  @media (hover:hover) and (pointer:fine){
+    .choice:hover{border-color:var(--red);}
+  }
+  .choice.ox-mark{font-size:clamp(28px,9vw,38px);font-weight:800;}
+  .choice.correct{background:linear-gradient(135deg,#2f9a64,#23744c);border-color:var(--green);color:#fff;}
+  .choice.wrong{background:linear-gradient(135deg,var(--red-deep),#8e0f2a);border-color:var(--red);color:#fff;}
+  .choice.dim{opacity:.4;}
+  .choice[disabled]{cursor:default;}
+
+  /* result overlay (正誤オーバーレイ) */
+  .result-overlay{
+    position:fixed;inset:0;z-index:55;background:rgba(6,4,6,.82);
+    display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);
+  }
+  .result-overlay.show{display:flex;animation:fade .25s ease;}
+  .ro-card{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));border-radius:22px;
+    max-width:420px;width:100%;padding:28px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.7);
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .ro-card.ok{border-color:var(--green);}
+  .ro-card.ng{border-color:var(--red);}
+  .ro-mark{font-size:64px;line-height:1;}
+  .ro-card.ok .ro-mark{color:var(--green);text-shadow:0 0 24px rgba(63,207,134,.5);}
+  .ro-card.ng .ro-mark{color:var(--red);text-shadow:0 0 24px rgba(255,0,51,.5);}
+  .ro-head{font-size:24px;font-weight:900;margin:8px 0 2px;}
+  .ro-card.ok .ro-head{color:var(--green);}
+  .ro-card.ng .ro-head{color:var(--red-soft);}
+  .ro-ans{margin:14px 0 0;font-size:14px;color:var(--dim);}
+  .ro-ans b{display:block;margin-top:4px;font-size:17px;color:var(--gold-soft);font-weight:700;line-height:1.5;}
+  .ro-explain{margin-top:14px;padding:13px 15px;background:rgba(255,206,58,.08);border-left:3px solid var(--gold);border-radius:9px;font-size:13px;line-height:1.8;color:#efe6d3;text-align:left;}
+  .ro-card .btn{margin-top:20px;width:100%;}
+
+  /* feedback toast */
+  .toast{
+    position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);
+    z-index:60;background:rgba(12,8,12,.96);border:1px solid var(--gold);
+    border-radius:14px;padding:14px 22px;max-width:90%;text-align:center;
+    box-shadow:0 10px 32px rgba(0,0,0,.55);
+    opacity:0;pointer-events:none;transition:opacity .25s ease,transform .25s ease;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .toast .big{font-size:18px;font-weight:900;}
+  .toast.ok .big{color:var(--green);}
+  .toast.ng .big{color:var(--red-soft);}
+  .toast .small{font-size:13px;color:#ece6e9;margin-top:4px;line-height:1.5;}
+
+  /* ===== Result ===== */
+  .result-card{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));
+    border:1px solid var(--gold);border-radius:20px;padding:28px 22px;text-align:center;
+    box-shadow:0 10px 34px var(--shadow);
+  }
+  .result-card .trophy{font-size:48px;}
+  .result-card h2{margin:8px 0 2px;font-size:24px;font-weight:900;}
+  .result-card .genre-name{color:var(--gold);font-size:15px;}
+  .score-break{margin:20px 0;display:grid;gap:8px;font-size:14px;}
+  .score-break .row{display:flex;justify-content:space-between;padding:9px 14px;background:rgba(0,0,0,.26);border-radius:9px;}
+  .score-break .row .v{font-weight:700;color:var(--gold);}
+  .total-score{font-size:46px;font-weight:900;color:var(--gold);margin:6px 0;text-shadow:0 0 18px rgba(255,206,58,.4);}
+  .total-score small{font-size:18px;color:var(--dim);}
+  .rank-badge{display:inline-block;padding:7px 20px;border-radius:30px;font-weight:900;margin-top:6px;font-size:15px;}
+
+  .name-entry{margin:18px 0;}
+  .name-entry input{
+    font-family:'Noto Sans JP',sans-serif;font-size:16px;padding:11px 14px;border-radius:11px;
+    border:1.5px solid rgba(255,206,58,.4);background:#211118;color:var(--white);width:100%;text-align:center;
+  }
+  .name-entry input:focus{outline:none;border-color:var(--gold);}
+  .result-actions{display:grid;gap:10px;margin-top:18px;}
+
+  /* ===== Review ===== */
+  .review-card{
+    background:linear-gradient(160deg,var(--bg2),var(--bg3));
+    border:1px solid rgba(255,0,51,.42);border-radius:18px;padding:22px 20px;box-shadow:0 8px 28px var(--shadow);
+  }
+  .review-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+  .review-head .ttl{color:var(--red-soft);font-weight:900;font-size:16px;}
+  .review-head .count{font-size:13px;color:var(--dim);}
+  .review-q{font-size:clamp(16px,4.4vw,20px);font-weight:700;line-height:1.6;margin-bottom:14px;}
+  .ans-line{padding:11px 14px;border-radius:11px;margin-bottom:8px;font-size:14px;line-height:1.6;}
+  .ans-line.yours{background:rgba(255,0,51,.15);border:1px solid rgba(255,0,51,.4);}
+  .ans-line.right{background:rgba(63,207,134,.13);border:1px solid rgba(63,207,134,.45);}
+  .ans-line .lab{font-size:11px;color:var(--dim);display:block;margin-bottom:2px;}
+  .ans-line.yours .val{color:var(--red-soft);font-weight:700;}
+  .ans-line.right .val{color:#7fe6ad;font-weight:700;}
+  .explain{margin-top:12px;padding:13px 15px;background:rgba(255,206,58,.08);border-left:3px solid var(--gold);border-radius:9px;font-size:13px;line-height:1.8;color:#efe6d3;}
+  .review-nav{display:flex;justify-content:space-between;gap:10px;margin-top:18px;}
+  .review-nav .btn{flex:1;}
+  .perfect-msg{text-align:center;padding:30px 10px;color:var(--gold);font-size:18px;line-height:1.7;font-weight:700;}
+
+  /* ===== Ranking ===== */
+  .rank-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .rank-tabs .tab{
+    flex:1;min-width:90px;font-size:12px;font-weight:700;
+    padding:8px 6px;border-radius:9px;border:1px solid rgba(255,0,51,.3);background:#211118;
+    color:var(--dim);cursor:pointer;text-align:center;transition:all .2s ease;
+  }
+  .rank-tabs .tab.active{background:linear-gradient(135deg,var(--gold),#e0a91f);color:#2a1f04;border-color:var(--gold);}
+  .rank-list{list-style:none;margin:0;padding:0;}
+  .rank-list li{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;background:rgba(0,0,0,.24);margin-bottom:7px;}
+  .rank-list li .pos{font-weight:900;width:28px;text-align:center;color:var(--dim);font-size:15px;}
+  .rank-list li.top1 .pos{color:#ffd24a;}.rank-list li.top2 .pos{color:#d8d8d8;}.rank-list li.top3 .pos{color:#e08a4f;}
+  .rank-list li .nm{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .rank-list li .dt{font-size:11px;color:var(--dim);}
+  .rank-list li .sc{font-weight:900;color:var(--gold);}
+  .rank-empty{text-align:center;color:var(--dim);padding:34px 10px;font-size:14px;line-height:1.7;}
+
+  .back-portal{position:fixed;top:12px;left:12px;z-index:40;}
+  .back-portal a{
+    display:inline-flex;align-items:center;gap:6px;
+    font-size:12px;font-weight:700;text-decoration:none;color:var(--dim);
+    background:rgba(11,10,12,.85);border:1px solid rgba(255,0,51,.35);border-radius:30px;padding:7px 14px;
+    transition:all .2s ease;backdrop-filter:blur(4px);
+  }
+  .back-portal a:hover{color:var(--red-soft);border-color:var(--red);}
+
+  .top-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px;}
+
+  @media(max-width:360px){
+    .hud .pill{padding:7px 11px;}
+  }
 </style>
 </head>
 <body>
-<div id="screen-top" class="screen active">
-  <div class="top-hero">
-    <div class="top-eyebrow">Tommy's Quiz Dojo // WORLD LEADERS</div>
-    <h1 class="top-title">世界の<span>リーダー</span>クイズ道場</h1>
-    <p class="top-sub">トランプ・習近平・プーチン・高市早苗…現職の世界のリーダーを学ぼう！</p>
-    <div class="top-note">📌 本クイズは公開情報に基づく事実問題で構成されています（政治的評価・主義主張を含みません）</div>
-    <div class="top-rule">📋 制限時間：<strong>120秒</strong> ／ 各ジャンル<strong>10問</strong>ランダム出題<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒のペナルティ<br>🏆 残り時間がそのままボーナス点に加算！<br>【4択】と【○×】がランダムにミックスされます</div>
-  </div>
-  <div class="genres-wrap">
-    <div class="genres-label">// ジャンルを選んでスタート</div>
-    <div class="genres-hint">👆 カードをクリックするとすぐに始められます</div>
-    <div class="genres-grid" id="genres-grid"></div>
-    <div class="ranking-btn-wrap"><button class="ranking-btn" onclick="showRanking()">🏆 スコアランキングを見る</button></div>
-  </div>
+<canvas id="bgCanvas"></canvas>
+
+<div class="back-portal">
+  <a href="https://pecpec37-gift.github.io/portal/">‹ ポータルサイトに戻る</a>
 </div>
-<div id="screen-intro" class="screen">
-  <div class="intro-box">
-    <span class="intro-icon" id="intro-icon"></span>
-    <div class="intro-name" id="intro-name"></div>
-    <div class="intro-desc" id="intro-desc"></div>
-    <div class="intro-rule">制限時間：<strong>120秒</strong> ／ 10問ランダム出題（4択＋○×ミックス）<br>✅ 正解 → <strong>+10点</strong> ＋ 時間+5秒<br>❌ 不正解 → 減点なし ＋ 時間−5秒<br>🏆 残り時間がそのままボーナス点に加算</div>
-    <div class="name-label">// Your Name（ランキングに表示）</div>
-    <input class="name-input" id="name-input" type="text" maxlength="20" placeholder="プレーヤー名（任意）">
-    <button class="start-btn" onclick="startGame()">スタート ▶</button>
-    <button class="back-link" onclick="showScreen('screen-top')">← 戻る</button>
-  </div>
-</div>
-<div id="screen-quiz" class="screen">
-  <div class="quiz-header">
-    <div class="quiz-qnum" id="quiz-qnum">Q1 / 10</div>
-    <div class="quiz-progress"><div class="quiz-progress-fill" id="quiz-progress-fill" style="width:0%"></div></div>
-    <div class="quiz-score" id="quiz-score">0 pt</div>
-    <div class="quiz-timer-wrap"><div class="quiz-timer" id="quiz-timer">120</div><div class="quiz-timer-label">秒</div></div>
-  </div>
-  <div class="quiz-body">
-    <div class="quiz-type-badge" id="quiz-type-badge">4択</div>
-    <div class="quiz-q" id="quiz-q"></div>
-    <div id="quiz-choices"></div>
-    <div class="feedback-bar" id="feedback-bar"></div>
-    <button class="next-btn" id="next-btn" onclick="nextQuestion()">次の問題へ →</button>
-  </div>
-</div>
-<div id="screen-result" class="screen">
-  <div class="result-box">
-    <div class="result-genre" id="result-genre"></div>
-    <div class="result-score-wrap">
-      <span class="result-medal" id="result-medal">🏆</span>
-      <div class="result-score" id="result-score">0</div>
-      <div class="result-score-label">TOTAL SCORE</div>
-      <div class="result-stats">
-        <div class="result-stat"><div class="result-stat-val green" id="result-correct">0</div><div class="result-stat-label">正解数</div></div>
-        <div class="result-stat"><div class="result-stat-val" id="result-wrong">0</div><div class="result-stat-label">不正解数</div></div>
-        <div class="result-stat"><div class="result-stat-val gold" id="result-bonus">+0</div><div class="result-stat-label">時間ボーナス</div></div>
+
+<div class="wrap">
+
+  <!-- ============ TITLE ============ -->
+  <section id="screen-title" class="screen active">
+    <div class="crest" style="margin-top:40px;">
+      <div class="seal">早押しクイズ道場 シリーズ</div>
+      <h1><span class="yt">世界のリーダーズ</span><br>クイズ<span class="dojo">道場</span></h1>
+      <div class="subtitle">WORLD LEADERS<br>各国の首脳・指導者の経歴・政策・最新の動向を、<br>早押しクイズで楽しく学ぼう。</div>
+      <div class="datenote">🌍 各国リーダーの経歴・政策・国際情勢から出題</div>
+    </div>
+
+    <div class="howto">
+      <h3>遊び方</h3>
+      <ul>
+        <li>リーダー別の各ジャンルから <b>ランダム10問</b>（4択 ＋ ○× ミックス）</li>
+        <li>問題が流れたら <b>「回答する！」</b> → 4つの選択肢が出現！</li>
+        <li>制限時間は <b>120秒</b>。残った時間はそのまま <b>ボーナス点</b> に！</li>
+        <li>正解 → <b>+10点 ＆ 時間+5秒</b>（「✅ 正解！ +5秒」）</li>
+        <li>不正解 → <b>減点なし・時間−5秒</b>（正解を表示）</li>
+        <li>終了後は <b>間違えた問題を1問ずつ復習</b> できます</li>
+        <li>正解率 <b>90%以上で🌸花丸スタンプ</b>（ポータルのランキングに反映）</li>
+        <li>スコアは端末内ランキングに記録（ローカル保存・共有なし）</li>
+      </ul>
+      <div class="tap-hint"><span>▶ ジャンルをクリックで即スタート！</span></div>
+    </div>
+
+    <div class="section-label">ジャンルを選ぶ</div>
+    <div class="genres" id="genreGrid"></div>
+
+    <div class="top-actions">
+      <button class="btn btn-ghost" onclick="showRanking()">🏆 ランキング</button>
+      <button class="btn btn-ghost" onclick="randomGenre()">🎲 おまかせ出題</button>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section id="screen-quiz" class="screen">
+    <div class="hud">
+      <div class="pill score-pill"><span class="lab">得点</span><span id="hudScore">0</span></div>
+      <div class="pill time-pill" id="timePill"><span class="lab">残り</span><span id="hudTime">120</span>秒</div>
+    </div>
+    <div class="timebar"><div class="fill" id="timeFill"></div></div>
+    <div class="progress" id="progress">第 1 問 / 10</div>
+
+    <div class="qcard">
+      <span class="qtag" id="qTag">ジャンル</span>
+      <span class="qtype" id="qType">4択</span>
+      <div class="qtext" id="qText"></div>
+      <div class="buzz-wrap" id="buzzWrap">
+        <button class="btn-buzz" onclick="buzz()">回答<br>する！</button>
+        <div class="buzz-hint">押すと選択肢が出ます</div>
+      </div>
+      <div class="choices" id="choices"></div>
+    </div>
+
+    <div class="footer-row">
+      <button class="btn btn-ghost" onclick="quitGame()">やめる</button>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section id="screen-result" class="screen">
+    <div class="result-card">
+      <div class="trophy">🏆</div>
+      <h2>結果発表</h2>
+      <div class="genre-name" id="resGenre">ジャンル</div>
+
+      <div class="total-score"><span id="resTotal">0</span><small> 点</small></div>
+      <div class="rank-badge" id="resBadge">—</div>
+
+      <div class="hanamaru" id="hanamaru" style="display:none;margin:16px auto 4px;padding:13px 16px;border-radius:16px;max-width:340px;background:linear-gradient(135deg,rgba(255,206,58,.2),rgba(255,0,51,.16));border:1.5px solid rgba(255,206,58,.6);">
+        <div style="font-size:30px;line-height:1;">🌸</div>
+        <div style="font-weight:900;color:var(--gold-soft);margin-top:4px;letter-spacing:.03em;">花丸スタンプ獲得！</div>
+        <div style="font-size:12px;color:var(--dim);margin-top:3px;">正解率90%以上達成　ポータルのランキングに反映されます</div>
+      </div>
+
+      <div class="score-break">
+        <div class="row"><span>正解数</span><span class="v"><span id="resCorrect">0</span> / 10 問</span></div>
+        <div class="row"><span>基礎点（正解×10）</span><span class="v"><span id="resBase">0</span> 点</span></div>
+        <div class="row"><span>残り時間ボーナス</span><span class="v">+ <span id="resBonus">0</span> 点</span></div>
+      </div>
+
+      <div class="name-entry" id="nameEntry">
+        <input type="text" id="playerName" placeholder="花丸ランキング用の名前（任意）" maxlength="12">
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-gold btn-block" id="saveBtn" onclick="saveScore()">📥 ランキングに登録</button>
+        <button class="btn btn-crimson btn-block" id="reviewBtn" onclick="showReview()">📖 間違えた問題を復習</button>
+        <button class="btn btn-ghost btn-block" onclick="retrySame()">🔁 同じジャンルに再挑戦</button>
+        <button class="btn btn-ghost btn-block" onclick="goTitle()">🏠 トップへ戻る</button>
       </div>
     </div>
-    <div class="result-actions">
-      <button class="result-btn result-btn-primary" onclick="retryGame()">もう一度挑戦</button>
-      <button class="result-btn result-btn-secondary" onclick="showScreen('screen-top')">← トップへ</button>
+  </section>
+
+  <!-- ============ REVIEW ============ -->
+  <section id="screen-review" class="screen">
+    <div class="review-card" id="reviewCard"></div>
+    <div class="footer-row">
+      <button class="btn btn-ghost" onclick="backToResult()">‹ 結果に戻る</button>
+    </div>
+  </section>
+
+  <!-- ============ RANKING ============ -->
+  <section id="screen-ranking" class="screen">
+    <div class="crest" style="margin-top:30px;">
+      <h1 style="font-size:clamp(26px,8vw,42px);">🏆 ランキング</h1>
+      <div class="subtitle">この端末に保存された記録（ジャンル別 / 上位10位）</div>
+    </div>
+    <div class="rank-tabs" id="rankTabs"></div>
+    <ul class="rank-list" id="rankList"></ul>
+    <div class="footer-row" style="gap:10px;flex-wrap:wrap;">
+      <button class="btn btn-ghost" onclick="goTitle()">🏠 トップへ戻る</button>
+      <button class="btn btn-ghost" onclick="clearRanking()">🗑 この記録を消去</button>
+    </div>
+  </section>
+
+</div>
+
+<!-- confirmation modal（最後の確認） -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <div class="ji" id="modalJi">🌍</div>
+    <h2 id="modalName">ジャンル</h2>
+    <p id="modalDesc"></p>
+    <div class="rules">
+      ⏱ 120秒　/　全10問　/　正解 +10点・+5秒<br>残り時間はそのままボーナス点に！
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeModal()">やめる</button>
+      <button class="btn btn-crimson" onclick="confirmStart()">スタート！</button>
     </div>
   </div>
-  <div class="wrong-section" id="wrong-section"></div>
-  <a class="portal-back" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
 </div>
-<div id="screen-ranking" class="screen">
-  <div class="ranking-wrap">
-    <div class="ranking-top"><div class="ranking-title">🏆 スコアランキング</div><button class="ranking-back" onclick="showScreen('screen-top')">← トップへ</button></div>
-    <div class="ranking-tabs" id="ranking-tabs"></div>
-    <div class="ranking-list" id="ranking-list"></div>
-    <div style="text-align:center;margin-top:16px;"><button class="ranking-del" onclick="deleteRanking()">🗑️ このジャンルの記録を削除</button></div>
+
+<!-- 正誤オーバーレイ -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="ro-card" id="roCard">
+    <div class="ro-mark" id="roMark">◯</div>
+    <div class="ro-head" id="roHead">正解！</div>
+    <div class="ro-ans" id="roAns"></div>
+    <div class="ro-explain" id="roExplain"></div>
+    <button class="btn btn-crimson" onclick="nextQuestion()">次の問題へ ›</button>
   </div>
 </div>
-<div id="toast"></div>
-<a class="portal-fixed-btn" href="https://pecpec37-gift.github.io/portal/">← とみやんのゲームランド</a>
+
+<!-- feedback toast -->
+<div class="toast" id="toast"><div class="big" id="toastBig"></div><div class="small" id="toastSmall"></div></div>
+
+<!-- ポータル共通：花丸スタンプ送信 -->
+<script src="https://pecpec37-gift.github.io/portal/stamp.js"></script>
+
 <script>
-const GENRES=[
-  {id:'trump',       icon:'🇺🇸', name:'トランプ（米国大統領）',   color:'#dc2626', desc:'第47代大統領・経歴・政策・MAGA・DOGE'},
-  {id:'xi',          icon:'🇨🇳', name:'習近平（中国国家主席）',   color:'#dc2626', desc:'一帯一路・中国夢・任期制限撤廃・台湾'},
-  {id:'putin',       icon:'🇷🇺', name:'プーチン（ロシア大統領）', color:'#1d4ed8', desc:'KGB・ウクライナ・エネルギー・核・外交'},
-  {id:'takaichi',    icon:'🇯🇵', name:'高市早苗（日本首相）',     color:'#dc2626', desc:'日本初女性首相・経済安保・積極財政・防衛'},
-  {id:'europe',      icon:'🌍', name:'欧州・西側のリーダー',      color:'#1d4ed8', desc:'マクロン・メルツ・スターマー・メローニ'},
-  {id:'asia_others', icon:'🌏', name:'アジア・その他のリーダー', color:'#16a34a', desc:'モディ・金正恩・ゼレンスキー・MBS・ルラ'},
-];
-const DB={
-trump:[
-  {type:'4',q:'ドナルド・トランプが第47代米国大統領に就任したのはいつか？',c:['2025年1月20日','2024年11月5日','2025年3月1日','2024年12月31日'],a:0},
-  {type:'ox',q:'トランプは第45代と第47代の両方で米国大統領を務めた。',a:true},
-  {type:'4',q:'トランプ大統領の出身州はどこか？',c:['フロリダ州','テキサス州','カリフォルニア州','ニューヨーク州'],a:3},
-  {type:'ox',q:'トランプは2016年大統領選でヒラリー・クリントンを破り初当選した。',a:true},
-  {type:'4',q:'トランプが掲げた経済政策のスローガンはどれか？',c:['America First（アメリカ・ファースト）','どちらも正しい','Make America Great Again（MAGA）','Build Back Better'],a:1},
-  {type:'ox',q:'トランプは2021年1月の連邦議会議事堂襲撃事件との関連で弾劾訴追された。',a:true},
-  {type:'4',q:'トランプが2025年に復帰後に推進した主要経済政策はどれか？',c:['大規模な関税引き上げ（貿易保護主義）','自由貿易協定の推進','TPP再加盟','法人税率の大幅引き下げのみ'],a:0},
-  {type:'ox',q:'トランプはニューヨーク州出身のビジネスマン・不動産王として知られる。',a:true},
-  {type:'4',q:'トランプの出身大学はどこか？',c:['スタンフォード大学','ハーバード大学','ペンシルバニア大学ウォートン校','イェール大学'],a:2},
-  {type:'ox',q:'トランプは大統領就任前に「アプレンティス」などのテレビ番組に出演していた。',a:true},
-  {type:'4',q:'トランプが2018年に北朝鮮の金正恩と行った首脳会談の開催地として最初の会合はどこか？',c:['ハノイ','シンガポール','板門店','ワシントンD.C.'],a:1},
-  {type:'ox',q:'トランプは在任中にパリ協定から離脱した（第1期）。',a:true},
-  {type:'4',q:'トランプの娘イヴァンカ・トランプの夫（婿）として知られる人物は誰か？',c:['ラリー・クドロー','ジャレッド・クシュナー','マイク・ペンス','スティーブ・バノン'],a:1},
-  {type:'ox',q:'トランプは2024年の大統領選挙でカマラ・ハリスを破り当選した。',a:true},
-  {type:'4',q:'トランプが推進した「メキシコとの国境の壁」建設の財源として主張した方法はどれか？',c:['議会の承認なしに実施','民間企業に委託','メキシコに費用を負担させる','米国内の税収から全額支出'],a:2},
-  {type:'ox',q:'トランプは第1期政権でNAFTAをUSMCA（米国・メキシコ・カナダ協定）に改定した。',a:true},
-  {type:'4',q:'トランプ大統領の副大統領（第2期）は誰か？',c:['マルコ・ルビオ','マイク・ペンス','JD・ヴァンス','ロン・デサンティス'],a:2},
-  {type:'ox',q:'トランプはSNSプラットフォーム「Truth Social」を設立した。',a:true},
-  {type:'4',q:'トランプが2025年以降進めた「DOGE（政府効率化省）」の責任者として任命されたのは誰か？',c:['ピーター・ティール','イーロン・マスク','ジェフ・ベゾス','マーク・ザッカーバーグ'],a:1},
-  {type:'ox',q:'トランプは複数回の民事・刑事訴訟を受けたが第47代大統領として就任した。',a:true},
-  {type:'4',q:'トランプが生まれた年はいつか？',c:['1946年','1955年','1950年','1942年'],a:0},
-  {type:'ox',q:'トランプはニューヨーク市クイーンズ区生まれだ。',a:true},
-  {type:'4',q:'トランプが第2期政権で掲げた関税政策の通称はどれか？',c:['米国製品保護関税','相互関税（レシプロカルタリフ）','フェアトレード関税','ゼロ関税政策'],a:1},
-  {type:'ox',q:'トランプはWHO（世界保健機関）からの離脱を指示した（第1期および第2期）。',a:true},
-  {type:'4',q:'トランプ政権の国務長官（第2期）に就任したのは誰か？',c:['ニッキー・ヘイリー','レックス・ティラーソン','マルコ・ルビオ','マイク・ポンペオ'],a:2},
-  {type:'ox',q:'トランプはグリーンランドの購入をデンマークに打診したことがある。',a:true},
-  {type:'4',q:'トランプ大統領が属する政党はどれか？',c:['無所属','民主党','改革党','共和党'],a:3},
-  {type:'ox',q:'トランプはNATO（北大西洋条約機構）加盟国に対してGDP比2%の防衛費拠出を強く求めた。',a:true},
-],
-xi:[
-  {type:'4',q:'習近平が中国共産党総書記に就任したのはいつか？',c:['2008年','2015年','2010年','2012年'],a:3},
-  {type:'ox',q:'習近平は国家主席・党総書記・中央軍事委員会主席の3つのトップポストを兼任している。',a:true},
-  {type:'4',q:'習近平が掲げる中国の長期ビジョン「2つの百年目標」の2つ目はどれか？',c:['建国100周年（2049年）までに社会主義現代化強国を実現','共産党創立100周年（2021年）までの達成目標','軍事力で米国を超えること','GDP世界1位の達成'],a:0},
-  {type:'ox',q:'習近平は2018年の憲法改正で国家主席の任期制限を撤廃した。',a:true},
-  {type:'4',q:'習近平が推進する広域経済圏構想の名称はどれか？',c:['RCEP経済圏','上海協力機構','一帯一路（Belt and Road Initiative）','アジア太平洋経済圏'],a:2},
-  {type:'ox',q:'習近平の父・習仲勲は中国共産党の高級幹部だった。',a:true},
-  {type:'4',q:'習近平が生まれた都市はどこか？',c:['上海','延安','西安','北京'],a:3},
-  {type:'ox',q:'「中国の夢（中国夢）」は習近平が掲げる中華民族の偉大な復興を目指すスローガンだ。',a:true},
-  {type:'4',q:'習近平が強調する統治概念「人類運命共同体」とはどんな概念か？',c:['各国が協力して共通の未来を構築するという中国が提唱するグローバルな理念','軍事同盟の構築','一党独裁制の輸出','中国と近隣諸国の経済連合'],a:0},
-  {type:'ox',q:'習近平は文化大革命時代に農村への「下放」を経験した。',a:true},
-  {type:'4',q:'習近平が出身した地方（陝西省の農村）で過ごした期間はどれくらいか？',c:['約1年間','約2年間','約7年間','約15年間'],a:2},
-  {type:'ox',q:'「共同富裕」は習近平が掲げる格差是正・共同の豊かさを目指す政策理念だ。',a:true},
-  {type:'4',q:'習近平が指導する中国の国内総生産（GDP）規模は世界何位か（2024年時点）？',c:['世界第3位','世界第2位（米国に次ぐ）','世界第1位','世界第4位'],a:1},
-  {type:'ox',q:'習近平政権はAI・半導体などのハイテク分野の国産化を強力に推進している。',a:true},
-  {type:'4',q:'2021年に中国共産党が採択した「歴史決議」は何回目か？',c:['4回目','3回目（毛沢東・鄧小平に続く）','2回目','初めて'],a:1},
-  {type:'ox',q:'習近平は清華大学で化学工程を専攻した（学士課程）。',a:false},
-  {type:'4',q:'習近平が推進する「デジタル人民元（e-CNY）」の主な目的はどれか？',c:['暗号通貨市場への参入','ドルを排除すること','民間企業への利益提供','決済のデジタル化と金融システムの現代化'],a:3},
-  {type:'ox',q:'習近平は2022年の第20回党大会で3期目の総書記に選出された。',a:true},
-  {type:'4',q:'台湾問題に関して習近平が繰り返し主張する基本方針はどれか？',c:['国際社会の仲裁に委ねる','台湾は中国の一部であり統一を目指す（武力行使も排除しない）','台湾の独立を認める','現状維持を永続させる'],a:1},
-  {type:'ox',q:'習近平は浙江省の省長・党書記を経て中央政界に進出した。',a:true},
-  {type:'4',q:'中国が習近平政権下で強力に推進している「Made in China 2025」は何を目指す計画か？',c:['農業の近代化・食料安保の確立','2025年までのGDP世界1位達成','製造業の高度化・ハイテク産業での世界的地位確立','環境問題への取り組み'],a:2},
-  {type:'ox',q:'習近平は人民解放軍（PLA）の近代化・強化を精力的に進めている。',a:true},
-  {type:'4',q:'習近平が2023年に提唱した「グローバル文明イニシアティブ」の趣旨はどれか？',c:['文明の多様性を尊重して一国の価値観を他国に押し付けないという理念','中国文化の世界普及','儒教の国際化','文化大革命の再評価'],a:0},
-  {type:'ox',q:'習近平は「反腐敗運動」を推進して多数の党・軍幹部を摘発した。',a:true},
-  {type:'4',q:'習近平政権が「ゼロコロナ政策」を終了させたのはいつ頃か？',c:['2021年末','2024年','2020年末','2022年末〜2023年初頭'],a:3},
-  {type:'ox',q:'中国は習近平政権下でBRICS（ブラジル・ロシア・インド・中国・南アフリカ等）の主要メンバーだ。',a:true},
-  {type:'4',q:'習近平が最初に国家主席に就任した年はいつか？',c:['2015年','2014年','2013年','2012年'],a:2},
-  {type:'ox',q:'香港での「国家安全維持法」施行（2020年）は習近平政権下で実施された。',a:true},
-],
-putin:[
-  {type:'4',q:'ウラジーミル・プーチンが初めてロシア大統領に就任したのはいつか？',c:['2000年','2004年','1998年','1999年'],a:0},
-  {type:'ox',q:'プーチンはKGB（ソ連国家保安委員会）の出身だ。',a:true},
-  {type:'4',q:'プーチンが生まれた都市はどこか？',c:['ウラジオストク','ノボシビルスク','モスクワ','レニングラード（現サンクトペテルブルク）'],a:3},
-  {type:'ox',q:'プーチンはエリツィン前大統領の後継者として大統領職に就いた。',a:true},
-  {type:'4',q:'プーチンが2024年の大統領選挙で得票した割合はどれくらいか？',c:['約50%','約87%','約75%','約60%'],a:1},
-  {type:'ox',q:'プーチンは首相→大統領→首相→大統領というキャリアを経ている。',a:true},
-  {type:'4',q:'プーチン政権下でロシアが2014年に併合した地域はどこか？',c:['ルハンスク','ドネツク','ザポリージャ','クリミア半島'],a:3},
-  {type:'ox',q:'プーチンはロシアのウクライナ侵攻（2022年2月）を「特別軍事作戦」と称した。',a:true},
-  {type:'4',q:'プーチンの出身大学はどこか？',c:['KGB高等学校のみ','軍事大学','モスクワ大学','レニングラード大学（現サンクトペテルブルク大学）法学部'],a:3},
-  {type:'ox',q:'プーチンは柔道の有段者として知られる。',a:true},
-  {type:'4',q:'プーチン政権下のロシアのエネルギー政策で特に重要な資源はどれか？',c:['天然ガス・石油（欧州向け供給が外交ツールに）','石炭のみ','核エネルギーのみ','再生可能エネルギー'],a:0},
-  {type:'ox',q:'ICC（国際刑事裁判所）はプーチンに対してウクライナ関連で逮捕状を発行した。',a:true},
-  {type:'4',q:'プーチンが参加するBRICSに関して正しいのはどれか？',c:['ロシアはBRICSに2024年加入','BRICSからロシアは除外されている','BRICSはロシアが設立した','ロシアはBRICSの主要メンバーで新興国との連携を重視'],a:3},
-  {type:'ox',q:'プーチンはロシア正教会との密接な関係を維持・強調している。',a:true},
-  {type:'4',q:'プーチンが2022年以降のウクライナ戦争で主張した開戦理由のひとつはどれか？',c:['歴史的な領土回復','天然資源の確保','ウクライナのEU加盟反対','NATOの東方拡大への対抗とロシア系住民の保護'],a:3},
-  {type:'ox',q:'ロシアは2022年のウクライナ侵攻後に欧米からの経済制裁を受けた。',a:true},
-  {type:'4',q:'プーチンが掲げる「ロシア世界（ルスキー・ミール）」とはどんな概念か？',c:['ロシア文化・言語・価値観を共有する人々の繋がりという文化的概念','ロシア帝国の復活','ソビエト連邦の再建','東欧全体のロシア化'],a:0},
-  {type:'ox',q:'プーチンは2008年のジョージア（グルジア）との戦争時にも大統領職に就いていた（首相として関与）。',a:true},
-  {type:'4',q:'プーチンが生まれた年はいつか？',c:['1948年','1955年','1952年','1960年'],a:2},
-  {type:'ox',q:'プーチンはソ連崩壊（1991年）をロシアの悲劇と述べたことがある。',a:true},
-  {type:'4',q:'プーチン政権のロシアが軍事・外交的に強化している「ユーラシア経済連合（EAEU）」とはどれか？',c:['CIS（独立国家共同体）の別名','NATO対抗の軍事同盟','中国との二国間条約','ロシア主導で旧ソ連圏の経済統合を目指す地域機構'],a:3},
-  {type:'ox',q:'プーチンはドレスデン（旧東ドイツ）でKGBとして勤務した経験がある。',a:true},
-  {type:'4',q:'ロシアのウクライナ侵攻（2022年）が始まった月はいつか？',c:['2022年1月','2022年3月','2022年2月','2021年12月'],a:2},
-  {type:'ox',q:'プーチンは2024年の大統領選挙で通算5期目の大統領職に就いた。',a:true},
-  {type:'4',q:'プーチン政権下のロシアの「核抑止力」に関して公式に維持している政策はどれか？',c:['核共有をNATO並みに拡大','核兵器の全廃を目指す','NPT（核不拡散条約）から離脱','戦略核・戦術核を含む核戦力の維持と近代化'],a:3},
-  {type:'ox',q:'プーチンは習近平と「限界のないパートナーシップ」を謳う宣言に署名した（2022年2月）。',a:true},
-  {type:'4',q:'プーチンが2024年に訪問し外交関係を強化した国はどれか？',c:['日本・韓国','フランス・ドイツ','インド・ブラジルのみ','北朝鮮・中国など'],a:3},
-  {type:'ox',q:'プーチン政権はロシアの石油・天然ガス産業への国家管理を強化した。',a:true},
-],
-takaichi:[
-  {type:'4',q:'高市早苗が日本の首相に就任したのはいつか？',c:['2025年10月','2025年9月','2026年1月','2025年12月'],a:0},
-  {type:'ox',q:'高市早苗は日本初の女性内閣総理大臣だ。',a:true},
-  {type:'4',q:'高市早苗が首相就任前に務めた党の役職はどれか？',c:['自由民主党幹事長','日本維新の会代表','自由民主党総裁','公明党代表'],a:2},
-  {type:'ox',q:'高市早苗は奈良県出身だ。',a:true},
-  {type:'4',q:'高市早苗が首相就任前に複数回務めた主要閣僚ポストはどれか？',c:['外務大臣','財務大臣','総務大臣','防衛大臣'],a:2},
-  {type:'ox',q:'高市早苗は自由民主党の衆議院議員として長年活動してきた。',a:true},
-  {type:'4',q:'高市早苗首相が特に重視する政策分野として知られるのはどれか？',c:['経済安全保障・科学技術・防衛力強化','社会保障改革のみ','農業政策のみ','地方創生のみ'],a:0},
-  {type:'ox',q:'高市早苗は松下政経塾出身ではなく、神戸大学経営学部出身だ。',a:false},
-  {type:'4',q:'高市早苗が首相就任前に初代大臣を務めた「経済安全保障担当大臣」を新設した内閣はどれか？',c:['菅内閣','岸内閣','岸田内閣','安倍内閣'],a:2},
-  {type:'ox',q:'高市早苗の選挙区は奈良県（比例近畿ブロック含む）だ。',a:true},
-  {type:'4',q:'高市早苗の出身大学はどこか？',c:['東京大学法学部','神戸大学経営学部','早稲田大学政治経済学部','京都大学法学部'],a:1},
-  {type:'ox',q:'高市早苗は2025年の自民党総裁選で石破茂首相の後継として総裁に選出された。',a:true},
-  {type:'4',q:'高市早苗首相が就任後に優先事項として挙げた政策はどれか？',c:['外交の多国間主義推進','消費税増税','インフレ対策・積極財政・経済成長','少子化対策のみ'],a:2},
-  {type:'ox',q:'高市早苗は女性として初めて自由民主党総裁に就任した。',a:true},
-  {type:'4',q:'高市早苗首相が2026年2月に行った政治行動はどれか？',c:['外国訪問のみ','参議院選挙を実施','衆議院を解散して総選挙を実施し与党が大勝した','内閣改造のみ'],a:2},
-  {type:'ox',q:'高市早苗は「積極財政」を支持する経済政策を主張してきた。',a:true},
-  {type:'4',q:'高市早苗は就任前にどんな肩書きでも知られていたか？',c:['農林水産大臣','環境大臣','国土交通大臣','科学技術政策担当大臣・デジタル政策'],a:3},
-  {type:'ox',q:'高市早苗首相は憲法改正（自衛隊明記など）に積極的な姿勢を示している。',a:true},
-  {type:'4',q:'高市早苗が生まれた年はいつか？',c:['1965年','1970年','1961年','1958年'],a:2},
-  {type:'ox',q:'高市早苗が率いる自民党は2026年の選挙で単独で衆議院の3分の2以上の議席を獲得した。',a:true},
-  {type:'4',q:'高市早苗首相と連立を組んでいる政党はどれか？',c:['日本維新の会','公明党','国民民主党','立憲民主党'],a:0},
-  {type:'ox',q:'高市早苗は第105代内閣総理大臣だ。',a:true},
-  {type:'4',q:'高市早苗が強調している「経済安全保障」政策の主な内容はどれか？',c:['円安誘導政策','全ての外国企業を排除する政策','輸出入の完全禁止','重要技術・サプライチェーンの国内確保と外国依存リスクの低減'],a:3},
-  {type:'ox',q:'高市早苗は過去に自民党政調会長も務めたことがある。',a:true},
-  {type:'4',q:'高市早苗首相が推進する財政政策の特徴はどれか？',c:['プライマリーバランス（財政均衡）より成長投資を優先する積極財政','防衛費削減による歳出削減','緊縮財政・財政再建優先','消費税を廃止する財政政策'],a:0},
-  {type:'ox',q:'高市早苗は過去に総務大臣として放送法をめぐる問題で国会でも注目された。',a:true},
-  {type:'4',q:'高市早苗首相が掲げる安全保障政策の特徴はどれか？',c:['集団的自衛権の全面禁止','専守防衛の厳格な維持','軍縮・非核化の推進','防衛力強化・反撃能力の整備・日米同盟の深化'],a:3},
-  {type:'ox',q:'高市早苗は「サンセット条項」など行政改革にも関心を示してきた。',a:true},
-],
-europe:[
-  {type:'4',q:'2025年時点でフランスの大統領は誰か？',c:['エドゥアール・フィリップ','エマニュエル・マクロン','ガブリエル・アタル','マリーヌ・ル・ペン'],a:1},
-  {type:'ox',q:'マクロンはフランス史上最年少で大統領に就任した（2017年）。',a:true},
-  {type:'4',q:'ドイツの首相として2025年に就任したのは誰か？',c:['オラフ・ショルツ','フリードリヒ・メルツ','アルミン・ラシェット','アンゲラ・メルケル'],a:1},
-  {type:'ox',q:'イギリスのキア・スターマー首相は労働党出身だ。',a:true},
-  {type:'4',q:'2024年の欧州議会選挙で最多議席を獲得したグループはどれか？',c:['社会民主進歩同盟（S&D）','欧州人民党（EPP）中道右派','アイデンティティと民主主義（ID）','欧州刷新（RE）'],a:1},
-  {type:'ox',q:'欧州連合（EU）の加盟国数は2024年時点で27か国だ。',a:true},
-  {type:'4',q:'NATO（北大西洋条約機構）の現事務総長（2024年就任）は誰か？',c:['ウルズラ・フォン・デア・ライエン','シャルル・ミシェル','マルク・ルッテ（元オランダ首相）','イエンス・ストルテンベルグ'],a:2},
-  {type:'ox',q:'ウクライナはEU加盟候補国の地位を得ている（2022年以降）。',a:true},
-  {type:'4',q:'イタリアの首相ジョルジャ・メローニが率いる政党はどれか？',c:['イタリアの同胞（FdI）','イタリア民主党（PD）','同盟（レーガ）','五つ星運動'],a:0},
-  {type:'ox',q:'ジョルジャ・メローニはイタリア史上初の女性首相だ。',a:true},
-  {type:'4',q:'ポーランドの首相として2023年末に就任したのは誰か？',c:['ドナルド・トゥスク','マテウシュ・モラヴィエツキ','アンジェイ・ドゥダ','レフ・ワレサ'],a:0},
-  {type:'ox',q:'スウェーデンは2024年にNATOに正式加盟した。',a:true},
-  {type:'4',q:'EU大統領（欧州理事会議長）として2024年に就任したのは誰か？',c:['アントニオ・コスタ','ウルズラ・フォン・デア・ライエン','シャルル・ミシェル','ジョゼップ・ボレル'],a:0},
-  {type:'ox',q:'ウルズラ・フォン・デア・ライエンは欧州委員会委員長に2期目も就任した。',a:true},
-  {type:'4',q:'スペインの首相ペドロ・サンチェスが属する政党はどれか？',c:['ポデモス','国民党（PP）','シウダダノス','スペイン社会労働党（PSOE）'],a:3},
-  {type:'ox',q:'フィンランドはロシアのウクライナ侵攻後に2023年にNATOに加盟した。',a:true},
-  {type:'4',q:'英国のキア・スターマーが首相就任前に率いた立場はどれか？',c:['自由民主党代表','野党・労働党党首','与党・保守党幹事長','无党派の法律家'],a:1},
-  {type:'ox',q:'G7は米英仏独伊日カナダの7か国で構成される主要先進国首脳会議だ。',a:true},
-  {type:'4',q:'2025年のG7首脳会議（サミット）の議長国はどこか？',c:['フランス','日本','カナダ','イタリア'],a:2},
-  {type:'ox',q:'マクロン仏大統領は「欧州戦略的自律」を掲げてEUの独自外交・防衛能力強化を主張している。',a:true},
-  {type:'4',q:'ノルウェーの首相ヨーナス・ガール・ストーレが属する政党はどれか？',c:['社会主義左翼党','保守党','進歩党','労働党'],a:3},
-  {type:'ox',q:'オーストラリアのアンソニー・アルバニージー首相は労働党出身だ。',a:true},
-  {type:'4',q:'トルコのレジェップ・タイイップ・エルドアンが属する政党はどれか？',c:['民族主義者行動党','公正発展党（AKP）','共和人民党（CHP）','民主人民党'],a:1},
-  {type:'ox',q:'トルコはNATOの加盟国だ。',a:true},
-  {type:'4',q:'ウクライナ大統領ウォロディミル・ゼレンスキーが大統領に就任した年はいつか？',c:['2014年','2019年','2022年','2021年'],a:1},
-  {type:'ox',q:'ゼレンスキーは俳優・コメディアン出身で政治経験なく大統領に当選した。',a:true},
-  {type:'4',q:'エルドアン大統領はいつからトルコを率いているか（首相・大統領通算）？',c:['1990年代から','2014年から（大統領就任）のみ','2018年以降のみ','2003年から（首相として）'],a:3},
-  {type:'ox',q:'カナダのジャスティン・トルドー前首相は2025年に辞任した。',a:true},
-  {type:'4',q:'カナダの新首相として2025年に就任したのは誰か？',c:['ジャグミート・シン','マーク・カーニー','クリスティア・フリーランド','ピエール・ポワリエーブル'],a:1},
-  {type:'ox',q:'マーク・カーニー前カナダ中央銀行総裁・前イングランド銀行総裁は自由党を率いて首相に就任した。',a:true},
-],
-asia_others:[
-  {type:'4',q:'インドの首相ナレンドラ・モディが属する政党はどれか？',c:['インド人民党（BJP）','アーム・アードミー党','インド国民会議派','サマジワディー党'],a:0},
-  {type:'ox',q:'モディ首相は2024年総選挙で3期連続の首相就任を果たした。',a:true},
-  {type:'4',q:'韓国の大統領として2025年に就任したのは誰か？',c:['尹錫悦（ユン・ソンニョル）','韓悳洙（ハン・ドクス）','李在明（イ・ジェミョン）','崔相穆（チェ・サンモク）'],a:2},
-  {type:'ox',q:'韓国の尹錫悦前大統領は2024年12月に戒厳令を宣布して弾劾訴追された。',a:true},
-  {type:'4',q:'北朝鮮の最高指導者は誰か？',c:['金正恩（キム・ジョンウン）','金日成（キム・イルソン）','金正日（キム・ジョンイル）','崔竜海（チェ・リョンヘ）'],a:0},
-  {type:'ox',q:'金正恩は2011年に父・金正日の後継者として北朝鮮の最高指導者に就いた。',a:true},
-  {type:'4',q:'イスラエルの首相ベンヤミン・ネタニヤフが属する政党はどれか？',c:['青と白','カハナ主義政党','リクード（統一）','労働党'],a:2},
-  {type:'ox',q:'ネタニヤフはイスラエル史上最長期間首相を務めた政治家だ。',a:true},
-  {type:'4',q:'サウジアラビアの実質的な指導者とされる皇太子の名前はどれか？',c:['ムハンマド・ビン・サルマン（MBS）','アブドラ前国王','ムハンマド・ビン・ナーイフ','サルマン国王'],a:0},
-  {type:'ox',q:'サウジアラビアのMBS皇太子は「ビジョン2030」という国家改革計画を主導している。',a:true},
-  {type:'4',q:'インドネシアの大統領として2024年に就任したのは誰か？',c:['アニス・バスウェダン','ジョコ・ウィドド（ジョコウィ）','プラボウォ・スビアント','ガンジャル・プラノウォ'],a:2},
-  {type:'ox',q:'ジョコ・ウィドド（ジョコウィ）前インドネシア大統領は2期10年務めた。',a:true},
-  {type:'4',q:'ブラジルの大統領ルラ（ルイス・イナシオ・ルーラ・ダ・シルバ）は何期目の大統領か（2023年就任）？',c:['4期目','2期目','3期目（過去2期2003〜2010年も務めた）','1期目'],a:2},
-  {type:'ox',q:'ブラジルのルラ大統領は労働者党（PT）出身だ。',a:true},
-  {type:'4',q:'メキシコの大統領として2024年に就任した女性大統領の名前はどれか？',c:['ロペス・オブラドール','マルガリータ・サバラ','クラウディア・シェインバウム','ベアトリス・パレデス'],a:2},
-  {type:'ox',q:'クラウディア・シェインバウムはメキシコ初の女性大統領だ。',a:true},
-  {type:'4',q:'アルゼンチンの大統領として2023年末に就任したハビエル・ミレイはどんな政治的立場で知られるか？',c:['伝統的ペロン主義','急進的リバタリアン・自由至上主義（国家縮小・ドル化を主張）','中道保守','左派ポピュリスト'],a:1},
-  {type:'ox',q:'ミレイ大統領はアルゼンチンの経済危機に対応するため大規模な財政緊縮策を実施した。',a:true},
-  {type:'4',q:'フィリピンの大統領として2022年に就任したのは誰か？',c:['ロドリゴ・ドゥテルテ','フェルディナンド・マルコス・ジュニア（ボンボン・マルコス）','サラ・ドゥテルテ','レニー・ロブレド'],a:1},
-  {type:'ox',q:'フィリピンのマルコス大統領の父・フェルディナンド・マルコスは元フィリピン大統領だ。',a:true},
-  {type:'4',q:'南アフリカの大統領シリル・ラマポーザが属する政党はどれか？',c:['民主同盟（DA）','経済的解放の戦士（EFF）','インカタ自由党（IFP）','アフリカ民族会議（ANC）'],a:3},
-  {type:'ox',q:'南アフリカでは2024年の総選挙でANCが過半数を失い連立政権を形成した。',a:true},
-  {type:'4',q:'パキスタン首相として2024年に就任したのは誰か？',c:['ナワズ・シャリフ','シャバズ・シャリフ','イムラン・カーン','ザルダリ大統領'],a:1},
-  {type:'ox',q:'イランの最高指導者は大統領ではなくハメネイ師（最高指導者）が最大の権力を持つ。',a:true},
-  {type:'4',q:'台湾の総統として2024年に就任したのは誰か？',c:['馬英九（マー・インジョウ）','柯文哲（クー・ウェンジョ）','頼清徳（ライ・チンテ）','蔡英文（ツァイ・インウェン）'],a:2},
-  {type:'ox',q:'頼清徳台湾総統は民主進歩党（民進党）出身だ。',a:true},
-  {type:'4',q:'ベトナムの最高指導者である共産党書記長として2024年に就任したのは誰か？',c:['ヴオン・ディン・フエ','ファム・ミン・チン','蘇林（ト・ラム）','グエン・フー・チョン'],a:2},
-  {type:'ox',q:'ベトナムは一党支配体制で共産党書記長が実質的な最高権力者だ。',a:true},
-  {type:'4',q:'オーストラリア首相アンソニー・アルバニージーが属する政党はどれか？',c:['国民党','自由党','労働党','緑の党'],a:2},
-  {type:'ox',q:'インドのモディ首相はグジャラート州の首相を長く務めた後に国政に転じた。',a:true},
-],
+/* =========================================================
+   世界のリーダーズクイズ道場／早押しクイズ道場 シリーズ
+   - 4択 + ○× ミックス / 10問ランダム出題
+   - タイプライター → 回答する！ → 選択肢 → 色付け → 問題文フェードイン
+     → 0.6秒後に正誤オーバーレイ → 次の問題へでトースト消去
+   - 120秒 + 残り時間ボーナス / 正解+10点+5秒 / 不正解-5秒
+   - 4択は表示時にシャッフル（正解位置の偏り防止）
+   - ○× は ◯/✕ の並びを固定（プール内で正誤を均等化）
+   - ジャンル別ローカルランキング(localStorage) / 間違い復習
+   - canvas背景の動的リサイズ
+   ========================================================= */
+
+const TOTAL_Q   = 10;
+const START_TIME= 120;
+const MAX_TIME  = 180;     /* +5秒で多少伸びる余地 */
+const TYPING_SPEED = 120;  /* ms / 文字（早押しタイプ速度）*/
+const STORAGE_KEY = 'world_leaders_quiz_dojo_ranking_v1';
+const STAMP_GAME_ID = 'world-leaders-quiz-dojo';  /* ポータル花丸スタンプ用ID（GitHubリポジトリ名と一致）*/
+
+/* ---------- 問題データ ----------
+   4択 : {q, a:正解, w:[誤答3つ], e:解説}
+   ○× : {q, ox:true/false, e:解説}
+*/
+const QUIZ = {
+  trump:{
+    name:"トランプ（米国大統領）", ji:"🇺🇸",
+    desc:"第47代大統領・経歴・政策・MAGA・DOGE",
+    pool:[
+      {q:"ドナルド・トランプが第47代米国大統領に就任したのはいつか？", a:"2025年1月20日", w:["2024年11月5日","2025年3月1日","2024年12月31日"], e:""},
+      {q:"トランプは第45代と第47代の両方で米国大統領を務めた。", ox:true, e:""},
+      {q:"トランプ大統領の出身州はどこか？", a:"ニューヨーク州", w:["フロリダ州","テキサス州","カリフォルニア州"], e:""},
+      {q:"トランプは2016年大統領選でバラク・オバマを破り初当選した。", ox:false, e:""},
+      {q:"トランプが掲げた経済政策のスローガンはどれか？", a:"どちらも正しい", w:["America First","Make America Great Again","Build Back Better"], e:""},
+      {q:"トランプは2021年1月の連邦議会議事堂襲撃に関連して有罪判決を受け、大統領職を失職した。", ox:false, e:""},
+      {q:"トランプが2025年に復帰後に推進した主要経済政策はどれか？", a:"大規模な関税引き上げ", w:["自由貿易協定の推進","TPP再加盟","法人税率の大幅引き下げのみ"], e:""},
+      {q:"トランプはニューヨーク州出身のビジネスマン・不動産王として知られる。", ox:true, e:""},
+      {q:"トランプの出身大学はどこか？", a:"ペンシルバニア大学ウォートン校", w:["スタンフォード大学","ハーバード大学","イェール大学"], e:""},
+      {q:"トランプは大統領就任前に「アプレンティス」などのテレビ番組に出演していた。", ox:true, e:""},
+      {q:"トランプが2018年に北朝鮮の金正恩と行った首脳会談の開催地として最初の会合はどこか？", a:"シンガポール", w:["ハノイ","板門店","ワシントンD.C."], e:""},
+      {q:"トランプは第1期政権で、新たにパリ協定へ加盟（参加）した。", ox:false, e:""},
+      {q:"トランプの娘イヴァンカ・トランプの夫（婿）として知られる人物は誰か？", a:"ジャレッド・クシュナー", w:["ラリー・クドロー","マイク・ペンス","スティーブ・バノン"], e:""},
+      {q:"トランプは2024年の大統領選挙でジョー・バイデンを破り当選した。", ox:false, e:""},
+      {q:"トランプが推進した「メキシコとの国境の壁」建設の財源として主張した方法はどれか？", a:"メキシコに費用を負担させる", w:["議会の承認なしに実施","民間企業に委託","米国内の税収から全額支出"], e:""},
+      {q:"トランプは第1期政権でNAFTAを完全に廃止し、後継協定を結ばなかった。", ox:false, e:""},
+      {q:"トランプ大統領の副大統領（第2期）は誰か？", a:"JD・ヴァンス", w:["マルコ・ルビオ","マイク・ペンス","ロン・デサンティス"], e:""},
+      {q:"トランプはSNSプラットフォーム「Truth Social」を設立した。", ox:true, e:""},
+      {q:"トランプが2025年以降進めた「DOGE（政府効率化省）」の責任者として任命されたのは誰か？", a:"イーロン・マスク", w:["ピーター・ティール","ジェフ・ベゾス","マーク・ザッカーバーグ"], e:""},
+      {q:"トランプは複数回の民事・刑事訴訟を受けたが第47代大統領として就任した。", ox:true, e:""},
+      {q:"トランプが生まれた年はいつか？", a:"1946年", w:["1955年","1950年","1942年"], e:""},
+      {q:"トランプはカリフォルニア州ロサンゼルス生まれだ。", ox:false, e:""},
+      {q:"トランプが第2期政権で掲げた関税政策の通称はどれか？", a:"相互関税", w:["米国製品保護関税","フェアトレード関税","ゼロ関税政策"], e:""},
+      {q:"トランプはWHO（世界保健機関）からの離脱を指示した（第1期および第2期）。", ox:true, e:""},
+      {q:"トランプ政権の国務長官（第2期）に就任したのは誰か？", a:"マルコ・ルビオ", w:["ニッキー・ヘイリー","レックス・ティラーソン","マイク・ポンペオ"], e:""},
+      {q:"トランプはグリーンランドの購入をデンマークに打診したことがある。", ox:true, e:""},
+      {q:"トランプ大統領が属する政党はどれか？", a:"共和党", w:["無所属","民主党","改革党"], e:""},
+      {q:"トランプはNATO（北大西洋条約機構）加盟国に対してGDP比2%の防衛費拠出を強く求めた。", ox:true, e:""},
+    ]
+  },
+  xi:{
+    name:"習近平（中国国家主席）", ji:"🇨🇳",
+    desc:"一帯一路・中国夢・任期制限撤廃・台湾",
+    pool:[
+      {q:"習近平が中国共産党総書記に就任したのはいつか？", a:"2012年", w:["2008年","2015年","2010年"], e:""},
+      {q:"習近平は国家主席・党総書記・中央軍事委員会主席の3つのトップポストを兼任している。", ox:true, e:""},
+      {q:"習近平が掲げる中国の長期ビジョン「2つの百年目標」の2つ目はどれか？", a:"建国100周年までに社会主義現代化強国を実現", w:["共産党創立100周年までの達成目標","軍事力で米国を超えること","GDP世界1位の達成"], e:""},
+      {q:"習近平は2018年の憲法改正で、国家主席の任期を2期10年に制限した。", ox:false, e:""},
+      {q:"習近平が推進する広域経済圏構想の名称はどれか？", a:"一帯一路", w:["RCEP経済圏","上海協力機構","アジア太平洋経済圏"], e:""},
+      {q:"習近平の父・習仲勲は中国国民党の軍人だった。", ox:false, e:""},
+      {q:"習近平が生まれた都市はどこか？", a:"北京", w:["上海","延安","西安"], e:""},
+      {q:"「中国の夢（中国夢）」は鄧小平が文化大革命中に提唱したスローガンだ。", ox:false, e:""},
+      {q:"習近平が強調する統治概念「人類運命共同体」とはどんな概念か？", a:"各国が協力して共通の未来を構築するという中国が提唱するグローバルな理念", w:["軍事同盟の構築","一党独裁制の輸出","中国と近隣諸国の経済連合"], e:""},
+      {q:"習近平は文化大革命時代に農村への「下放」を経験した。", ox:true, e:""},
+      {q:"習近平が出身した地方（陝西省の農村）で過ごした期間はどれくらいか？", a:"約7年間", w:["約1年間","約2年間","約15年間"], e:""},
+      {q:"「共同富裕」は習近平が掲げる格差是正・共同の豊かさを目指す政策理念だ。", ox:true, e:""},
+      {q:"習近平が指導する中国の国内総生産（GDP）規模は世界何位か（2024年時点）？", a:"世界第2位", w:["世界第3位","世界第1位","世界第4位"], e:""},
+      {q:"習近平政権はAI・半導体などのハイテク分野の国産化を強力に推進している。", ox:true, e:""},
+      {q:"2021年に中国共産党が採択した「歴史決議」は何回目か？", a:"3回目", w:["4回目","2回目","初めて"], e:""},
+      {q:"習近平は清華大学で化学工程を専攻した（学士課程）。", ox:false, e:""},
+      {q:"習近平が推進する「デジタル人民元（e-CNY）」の主な目的はどれか？", a:"決済のデジタル化と金融システムの現代化", w:["暗号通貨市場への参入","ドルを排除すること","民間企業への利益提供"], e:""},
+      {q:"習近平は2022年の第20回党大会で3期目の総書記に選出された。", ox:true, e:""},
+      {q:"台湾問題に関して習近平が繰り返し主張する基本方針はどれか？", a:"台湾は中国の一部であり統一を目指す", w:["国際社会の仲裁に委ねる","台湾の独立を認める","現状維持を永続させる"], e:""},
+      {q:"習近平は浙江省の省長・党書記を経て中央政界に進出した。", ox:true, e:""},
+      {q:"中国が習近平政権下で強力に推進している「Made in China 2025」は何を目指す計画か？", a:"製造業の高度化・ハイテク産業での世界的地位確立", w:["農業の近代化・食料安保の確立","2025年までのGDP世界1位達成","環境問題への取り組み"], e:""},
+      {q:"習近平は人民解放軍（PLA）の近代化・強化を精力的に進めている。", ox:true, e:""},
+      {q:"習近平が2023年に提唱した「グローバル文明イニシアティブ」の趣旨はどれか？", a:"文明の多様性を尊重して一国の価値観を他国に押し付けないという理念", w:["中国文化の世界普及","儒教の国際化","文化大革命の再評価"], e:""},
+      {q:"習近平は「反腐敗運動」を推進して多数の党・軍幹部を摘発した。", ox:true, e:""},
+      {q:"習近平政権が「ゼロコロナ政策」を終了させたのはいつ頃か？", a:"2022年末〜2023年初頭", w:["2021年末","2024年","2020年末"], e:""},
+      {q:"中国は習近平政権下でBRICSには加盟しておらず、G7の正式メンバーである。", ox:false, e:""},
+      {q:"習近平が最初に国家主席に就任した年はいつか？", a:"2013年", w:["2015年","2014年","2012年"], e:""},
+      {q:"香港での「国家安全維持法」施行（2020年）は習近平政権下で実施された。", ox:true, e:""},
+    ]
+  },
+  putin:{
+    name:"プーチン（ロシア大統領）", ji:"🇷🇺",
+    desc:"KGB・ウクライナ・エネルギー・核・外交",
+    pool:[
+      {q:"ウラジーミル・プーチンが初めてロシア大統領に就任したのはいつか？", a:"2000年", w:["2004年","1998年","1999年"], e:""},
+      {q:"プーチンはKGB（ソ連国家保安委員会）の出身だ。", ox:true, e:""},
+      {q:"プーチンが生まれた都市はどこか？", a:"レニングラード", w:["ウラジオストク","ノボシビルスク","モスクワ"], e:""},
+      {q:"プーチンはエリツィン前大統領の後継者として大統領職に就いた。", ox:true, e:""},
+      {q:"プーチンが2024年の大統領選挙で得票した割合はどれくらいか？", a:"約87%", w:["約50%","約75%","約60%"], e:""},
+      {q:"プーチンは一度も首相を務めたことがなく、大統領職のみを歴任してきた。", ox:false, e:""},
+      {q:"プーチン政権下でロシアが2014年に併合した地域はどこか？", a:"クリミア半島", w:["ルハンスク","ドネツク","ザポリージャ"], e:""},
+      {q:"プーチンは2022年のウクライナ侵攻を、公式に「宣戦布告した戦争」と呼んだ。", ox:false, e:""},
+      {q:"プーチンの出身大学はどこか？", a:"レニングラード大学法学部", w:["KGB高等学校のみ","軍事大学","モスクワ大学"], e:""},
+      {q:"プーチンはテニスの元プロ選手として知られる。", ox:false, e:""},
+      {q:"プーチン政権下のロシアのエネルギー政策で特に重要な資源はどれか？", a:"天然ガス・石油", w:["石炭のみ","核エネルギーのみ","再生可能エネルギー"], e:""},
+      {q:"ICC（国際刑事裁判所）はプーチンに対してウクライナ関連で逮捕状を発行した。", ox:true, e:""},
+      {q:"プーチンが参加するBRICSに関して正しいのはどれか？", a:"ロシアはBRICSの主要メンバーで新興国との連携を重視", w:["ロシアはBRICSに2024年加入","BRICSからロシアは除外されている","BRICSはロシアが設立した"], e:""},
+      {q:"プーチンはロシア正教会との密接な関係を維持・強調している。", ox:true, e:""},
+      {q:"プーチンが2022年以降のウクライナ戦争で主張した開戦理由のひとつはどれか？", a:"NATOの東方拡大への対抗とロシア系住民の保護", w:["歴史的な領土回復","天然資源の確保","ウクライナのEU加盟反対"], e:""},
+      {q:"ロシアは2022年のウクライナ侵攻後に欧米からの経済制裁を受けた。", ox:true, e:""},
+      {q:"プーチンが掲げる「ロシア世界（ルスキー・ミール）」とはどんな概念か？", a:"ロシア文化・言語・価値観を共有する人々の繋がりという文化的概念", w:["ロシア帝国の復活","ソビエト連邦の再建","東欧全体のロシア化"], e:""},
+      {q:"プーチンは2008年のジョージア（グルジア）との戦争の時、ロシアの大統領だった。", ox:false, e:""},
+      {q:"プーチンが生まれた年はいつか？", a:"1952年", w:["1948年","1955年","1960年"], e:""},
+      {q:"プーチンはソ連崩壊（1991年）をロシアの悲劇と述べたことがある。", ox:true, e:""},
+      {q:"プーチン政権のロシアが軍事・外交的に強化している「ユーラシア経済連合（EAEU）」とはどれか？", a:"ロシア主導で旧ソ連圏の経済統合を目指す地域機構", w:["CISの別名","NATO対抗の軍事同盟","中国との二国間条約"], e:""},
+      {q:"プーチンはKGB時代、主に米国ワシントンでスパイ活動を行っていた。", ox:false, e:""},
+      {q:"ロシアのウクライナ侵攻（2022年）が始まった月はいつか？", a:"2022年2月", w:["2022年1月","2022年3月","2021年12月"], e:""},
+      {q:"プーチンは2024年の大統領選挙で通算5期目の大統領職に就いた。", ox:true, e:""},
+      {q:"プーチン政権下のロシアの「核抑止力」に関して公式に維持している政策はどれか？", a:"戦略核・戦術核を含む核戦力の維持と近代化", w:["核共有をNATO並みに拡大","核兵器の全廃を目指す","NPTから離脱"], e:""},
+      {q:"プーチンは習近平と「限界のないパートナーシップ」を謳う宣言に署名した（2022年2月）。", ox:true, e:""},
+      {q:"プーチンが2024年に訪問し外交関係を強化した国はどれか？", a:"北朝鮮・中国など", w:["日本・韓国","フランス・ドイツ","インド・ブラジルのみ"], e:""},
+      {q:"プーチン政権はロシアの石油・天然ガス産業への国家管理を強化した。", ox:true, e:""},
+    ]
+  },
+  takaichi:{
+    name:"高市早苗（日本首相）", ji:"🇯🇵",
+    desc:"日本初の女性首相・経済安保・積極財政・防衛",
+    pool:[
+      {q:"高市早苗が日本の首相に就任したのはいつか？", a:"2025年10月", w:["2025年9月","2026年1月","2025年12月"], e:""},
+      {q:"高市早苗は日本初の女性内閣総理大臣だ。", ox:true, e:""},
+      {q:"高市早苗が首相就任前に務めた党の役職はどれか？", a:"自由民主党総裁", w:["自由民主党幹事長","日本維新の会代表","公明党代表"], e:""},
+      {q:"高市早苗は北海道出身だ。", ox:false, e:""},
+      {q:"高市早苗が首相就任前に複数回務めた主要閣僚ポストはどれか？", a:"総務大臣", w:["外務大臣","財務大臣","防衛大臣"], e:""},
+      {q:"高市早苗は長年、立憲民主党の参議院議員として活動してきた。", ox:false, e:""},
+      {q:"高市早苗首相が特に重視する政策分野として知られるのはどれか？", a:"経済安全保障・科学技術・防衛力強化", w:["社会保障改革のみ","農業政策のみ","地方創生のみ"], e:""},
+      {q:"高市早苗は松下政経塾出身ではなく、神戸大学経営学部出身だ。", ox:false, e:""},
+      {q:"高市早苗が首相就任前に初代大臣を務めた「経済安全保障担当大臣」を新設した内閣はどれか？", a:"岸田内閣", w:["菅内閣","岸内閣","安倍内閣"], e:""},
+      {q:"高市早苗の選挙区は奈良県（比例近畿ブロック含む）だ。", ox:true, e:""},
+      {q:"高市早苗の出身大学はどこか？", a:"神戸大学経営学部", w:["東京大学法学部","早稲田大学政治経済学部","京都大学法学部"], e:""},
+      {q:"高市早苗は2025年の自民党総裁選で石破茂首相の後継として総裁に選出された。", ox:true, e:""},
+      {q:"高市早苗首相が就任後に優先事項として挙げた政策はどれか？", a:"インフレ対策・積極財政・経済成長", w:["外交の多国間主義推進","消費税増税","少子化対策のみ"], e:""},
+      {q:"高市早苗は女性として初めて自由民主党総裁に就任した。", ox:true, e:""},
+      {q:"高市早苗首相が2026年2月に行った政治行動はどれか？", a:"衆議院を解散して総選挙を実施し与党が大勝した", w:["外国訪問のみ","参議院選挙を実施","内閣改造のみ"], e:""},
+      {q:"高市早苗は「積極財政」を支持する経済政策を主張してきた。", ox:true, e:""},
+      {q:"高市早苗は就任前にどんな肩書きでも知られていたか？", a:"科学技術政策担当大臣・デジタル政策", w:["農林水産大臣","環境大臣","国土交通大臣"], e:""},
+      {q:"高市早苗首相は憲法改正（自衛隊明記など）に積極的な姿勢を示している。", ox:true, e:""},
+      {q:"高市早苗が生まれた年はいつか？", a:"1961年", w:["1965年","1970年","1958年"], e:""},
+      {q:"高市早苗が率いる自民党は2026年の選挙で単独で衆議院の3分の2以上の議席を獲得した。", ox:true, e:""},
+      {q:"高市早苗首相と連立を組んでいる政党はどれか？", a:"日本維新の会", w:["公明党","国民民主党","立憲民主党"], e:""},
+      {q:"高市早苗は第105代内閣総理大臣だ。", ox:true, e:""},
+      {q:"高市早苗が強調している「経済安全保障」政策の主な内容はどれか？", a:"重要技術・サプライチェーンの国内確保と外国依存リスクの低減", w:["円安誘導政策","全ての外国企業を排除する政策","輸出入の完全禁止"], e:""},
+      {q:"高市早苗は過去に自民党政調会長も務めたことがある。", ox:true, e:""},
+      {q:"高市早苗首相が推進する財政政策の特徴はどれか？", a:"プライマリーバランスより成長投資を優先する積極財政", w:["防衛費削減による歳出削減","緊縮財政・財政再建優先","消費税を廃止する財政政策"], e:""},
+      {q:"高市早苗は過去に総務大臣として放送法をめぐる問題で国会でも注目された。", ox:true, e:""},
+      {q:"高市早苗首相が掲げる安全保障政策の特徴はどれか？", a:"防衛力強化・反撃能力の整備・日米同盟の深化", w:["集団的自衛権の全面禁止","専守防衛の厳格な維持","軍縮・非核化の推進"], e:""},
+      {q:"高市早苗は「サンセット条項」など行政改革にも関心を示してきた。", ox:true, e:""},
+    ]
+  },
+  europe:{
+    name:"欧州・西側のリーダー", ji:"🌍",
+    desc:"マクロン・スターマー・メローニ・EU・NATO",
+    pool:[
+      {q:"2025年時点でフランスの大統領は誰か？", a:"エマニュエル・マクロン", w:["エドゥアール・フィリップ","ガブリエル・アタル","マリーヌ・ル・ペン"], e:""},
+      {q:"マクロンはフランス史上最年少で大統領に就任した（2017年）。", ox:true, e:""},
+      {q:"ドイツの首相として2025年に就任したのは誰か？", a:"フリードリヒ・メルツ", w:["オラフ・ショルツ","アルミン・ラシェット","アンゲラ・メルケル"], e:""},
+      {q:"イギリスのキア・スターマー首相は保守党出身だ。", ox:false, e:""},
+      {q:"2024年の欧州議会選挙で最多議席を獲得したグループはどれか？", a:"欧州人民党中道右派", w:["社会民主進歩同盟","アイデンティティと民主主義","欧州刷新"], e:""},
+      {q:"欧州連合（EU）の加盟国数は2024年時点で15か国だ。", ox:false, e:""},
+      {q:"NATO（北大西洋条約機構）の現事務総長（2024年就任）は誰か？", a:"マルク・ルッテ", w:["ウルズラ・フォン・デア・ライエン","シャルル・ミシェル","イエンス・ストルテンベルグ"], e:""},
+      {q:"ウクライナはEU加盟候補国の地位を得ている（2022年以降）。", ox:true, e:""},
+      {q:"イタリアの首相ジョルジャ・メローニが率いる政党はどれか？", a:"イタリアの同胞", w:["イタリア民主党","同盟","五つ星運動"], e:""},
+      {q:"ジョルジャ・メローニはイタリア史上初の女性首相だ。", ox:true, e:""},
+      {q:"ポーランドの首相として2023年末に就任したのは誰か？", a:"ドナルド・トゥスク", w:["マテウシュ・モラヴィエツキ","アンジェイ・ドゥダ","レフ・ワレサ"], e:""},
+      {q:"スウェーデンは2024年にNATOに正式加盟した。", ox:true, e:""},
+      {q:"EU大統領（欧州理事会議長）として2024年に就任したのは誰か？", a:"アントニオ・コスタ", w:["ウルズラ・フォン・デア・ライエン","シャルル・ミシェル","ジョゼップ・ボレル"], e:""},
+      {q:"ウルズラ・フォン・デア・ライエンは欧州委員会委員長に2期目も就任した。", ox:true, e:""},
+      {q:"スペインの首相ペドロ・サンチェスが属する政党はどれか？", a:"スペイン社会労働党", w:["ポデモス","国民党","シウダダノス"], e:""},
+      {q:"フィンランドはNATOには加盟しておらず、永世中立を維持している。", ox:false, e:""},
+      {q:"英国のキア・スターマーが首相就任前に率いた立場はどれか？", a:"野党・労働党党首", w:["自由民主党代表","与党・保守党幹事長","无党派の法律家"], e:""},
+      {q:"G7は米英仏独伊日に中国を加えた7か国で構成される。", ox:false, e:""},
+      {q:"2025年のG7首脳会議（サミット）の議長国はどこか？", a:"カナダ", w:["フランス","日本","イタリア"], e:""},
+      {q:"マクロン仏大統領は「欧州戦略的自律」を掲げてEUの独自外交・防衛能力強化を主張している。", ox:true, e:""},
+      {q:"ノルウェーの首相ヨーナス・ガール・ストーレが属する政党はどれか？", a:"労働党", w:["社会主義左翼党","保守党","進歩党"], e:""},
+      {q:"オーストラリアのアンソニー・アルバニージー首相は自由党（保守系）出身だ。", ox:false, e:""},
+      {q:"トルコのレジェップ・タイイップ・エルドアンが属する政党はどれか？", a:"公正発展党", w:["民族主義者行動党","共和人民党","民主人民党"], e:""},
+      {q:"トルコはNATOの加盟国だ。", ox:true, e:""},
+      {q:"ウクライナ大統領ウォロディミル・ゼレンスキーが大統領に就任した年はいつか？", a:"2019年", w:["2014年","2022年","2021年"], e:""},
+      {q:"ゼレンスキーは俳優・コメディアン出身で政治経験なく大統領に当選した。", ox:true, e:""},
+      {q:"エルドアン大統領はいつからトルコを率いているか（首相・大統領通算）？", a:"2003年から", w:["1990年代から","2014年からのみ","2018年以降のみ"], e:""},
+      {q:"カナダのジャスティン・トルドー前首相は2025年に辞任した。", ox:true, e:""},
+      {q:"カナダの新首相として2025年に就任したのは誰か？", a:"マーク・カーニー", w:["ジャグミート・シン","クリスティア・フリーランド","ピエール・ポワリエーブル"], e:""},
+      {q:"マーク・カーニー前カナダ中央銀行総裁・前イングランド銀行総裁は自由党を率いて首相に就任した。", ox:true, e:""},
+    ]
+  },
+  asia_others:{
+    name:"アジア・その他のリーダー", ji:"🌏",
+    desc:"モディ・金正恩・ゼレンスキー・MBS・ルラ",
+    pool:[
+      {q:"インドの首相ナレンドラ・モディが属する政党はどれか？", a:"インド人民党", w:["アーム・アードミー党","インド国民会議派","サマジワディー党"], e:""},
+      {q:"モディ首相は2024年総選挙で3期連続の首相就任を果たした。", ox:true, e:""},
+      {q:"韓国の大統領として2025年に就任したのは誰か？", a:"李在明", w:["尹錫悦","韓悳洙","崔相穆"], e:""},
+      {q:"韓国の尹錫悦前大統領は2024年12月に戒厳令を宣布して弾劾訴追された。", ox:true, e:""},
+      {q:"北朝鮮の最高指導者は誰か？", a:"金正恩", w:["金日成","金正日","崔竜海"], e:""},
+      {q:"金正恩は2011年に父・金正日の後継者として北朝鮮の最高指導者に就いた。", ox:true, e:""},
+      {q:"イスラエルの首相ベンヤミン・ネタニヤフが属する政党はどれか？", a:"リクード", w:["青と白","カハナ主義政党","労働党"], e:""},
+      {q:"ネタニヤフはイスラエル史上、在任期間が最も短い首相として知られる。", ox:false, e:""},
+      {q:"サウジアラビアの実質的な指導者とされる皇太子の名前はどれか？", a:"ムハンマド・ビン・サルマン", w:["アブドラ前国王","ムハンマド・ビン・ナーイフ","サルマン国王"], e:""},
+      {q:"サウジアラビアのMBS皇太子は「ビジョン2030」という国家改革計画を主導している。", ox:true, e:""},
+      {q:"インドネシアの大統領として2024年に就任したのは誰か？", a:"プラボウォ・スビアント", w:["アニス・バスウェダン","ジョコ・ウィドド","ガンジャル・プラノウォ"], e:""},
+      {q:"ジョコ・ウィドド（ジョコウィ）前インドネシア大統領は2期10年務めた。", ox:true, e:""},
+      {q:"ブラジルの大統領ルラ（ルイス・イナシオ・ルーラ・ダ・シルバ）は何期目の大統領か（2023年就任）？", a:"3期目", w:["4期目","2期目","1期目"], e:""},
+      {q:"ブラジルのルラ大統領は社会自由党（右派）出身だ。", ox:false, e:""},
+      {q:"メキシコの大統領として2024年に就任した女性大統領の名前はどれか？", a:"クラウディア・シェインバウム", w:["ロペス・オブラドール","マルガリータ・サバラ","ベアトリス・パレデス"], e:""},
+      {q:"クラウディア・シェインバウムはメキシコ初の女性大統領だ。", ox:true, e:""},
+      {q:"アルゼンチンの大統領として2023年末に就任したハビエル・ミレイはどんな政治的立場で知られるか？", a:"急進的リバタリアン・自由至上主義", w:["伝統的ペロン主義","中道保守","左派ポピュリスト"], e:""},
+      {q:"ミレイ大統領はアルゼンチンの経済危機に対応するため大規模な財政緊縮策を実施した。", ox:true, e:""},
+      {q:"フィリピンの大統領として2022年に就任したのは誰か？", a:"フェルディナンド・マルコス・ジュニア", w:["ロドリゴ・ドゥテルテ","サラ・ドゥテルテ","レニー・ロブレド"], e:""},
+      {q:"フィリピンのマルコス大統領の父フェルディナンド・マルコスは、元大統領ではなく軍の将軍だった。", ox:false, e:""},
+      {q:"南アフリカの大統領シリル・ラマポーザが属する政党はどれか？", a:"アフリカ民族会議", w:["民主同盟","経済的解放の戦士","インカタ自由党"], e:""},
+      {q:"南アフリカでは2024年の総選挙でANCが過半数を失い連立政権を形成した。", ox:true, e:""},
+      {q:"パキスタン首相として2024年に就任したのは誰か？", a:"シャバズ・シャリフ", w:["ナワズ・シャリフ","イムラン・カーン","ザルダリ大統領"], e:""},
+      {q:"イランの最高指導者は大統領ではなくハメネイ師（最高指導者）が最大の権力を持つ。", ox:true, e:""},
+      {q:"台湾の総統として2024年に就任したのは誰か？", a:"頼清徳", w:["馬英九","柯文哲","蔡英文"], e:""},
+      {q:"頼清徳台湾総統は国民党（KMT）出身だ。", ox:false, e:""},
+      {q:"ベトナムの最高指導者である共産党書記長として2024年に就任したのは誰か？", a:"蘇林", w:["ヴオン・ディン・フエ","ファム・ミン・チン","グエン・フー・チョン"], e:""},
+      {q:"ベトナムは一党支配体制で共産党書記長が実質的な最高権力者だ。", ox:true, e:""},
+      {q:"オーストラリア首相アンソニー・アルバニージーが属する政党はどれか？", a:"労働党", w:["国民党","自由党","緑の党"], e:""},
+      {q:"インドのモディ首相は国政に転じる前、ケララ州の州首相を長く務めた。", ox:false, e:""},
+    ]
+  },
 };
-let currentGenre=null,questions=[],qIndex=0,score=0,correctCount=0,wrongCount=0;
-let timeLeft=120,timer=null,answered=false,wrongAnswers=[],playerName='';
-let currentRankingGenre=null;
-function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
-function showToast(msg,d=2500){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),d);}
+
+const ORDER = ['trump','xi','putin','takaichi','europe','asia_others'];
+
+/* ---------- 状態 ---------- */
+let curGenre=null, pendingGenre=null;
+let questions=[], idx=0, score=0, correctCount=0, wrongList=[], timeLeft=START_TIME;
+let timerId=null, typingTimeout=null, fullQText='', answered=false, isOX=false;
+let lastResult=null, reviewIdx=0;
+
+/* ---------- ジャンルカード ---------- */
 function buildGenreCards(){
-  const grid=document.getElementById('genres-grid');
-  grid.innerHTML=GENRES.map(g=>`<div class="genre-card" onclick="selectGenre('${g.id}')"><div class="genre-accent" style="background:${g.color};"></div><span class="genre-icon">${g.icon}</span><div class="genre-name">${g.name}</div><div class="genre-desc">${g.desc}</div><div class="genre-count">全${DB[g.id].length}問収録 ／ 10問ランダム出題</div><span class="genre-start">▶ START</span></div>`).join('');
+  const grid=document.getElementById('genreGrid');
+  grid.innerHTML='';
+  ORDER.forEach(key=>{
+    const g=QUIZ[key];
+    const card=document.createElement('div');
+    card.className='gcard';
+    card.onclick=()=>openModal(key);
+    card.innerHTML=`<div class="ji">${g.ji}</div><div class="nm">${g.name}</div><div class="ct">全${g.pool.length}問から出題</div>`;
+    grid.appendChild(card);
+  });
 }
-function selectGenre(id){
-  currentGenre=GENRES.find(g=>g.id===id);
-  document.getElementById('intro-icon').textContent=currentGenre.icon;
-  document.getElementById('intro-name').textContent=currentGenre.name;
-  document.getElementById('intro-desc').textContent=currentGenre.desc;
-  if(window.TomyStamp){const saved=TomyStamp.getPlayer();const inp=document.getElementById('name-input');if(saved&&!inp.value)inp.value=saved;}
-  showScreen('screen-intro');
+
+/* ---------- 確認モーダル（最後の確認） ---------- */
+function openModal(key){
+  pendingGenre=key;
+  const g=QUIZ[key];
+  document.getElementById('modalJi').textContent=g.ji;
+  document.getElementById('modalName').textContent=g.name;
+  document.getElementById('modalDesc').textContent=g.desc;
+  document.getElementById('modalBg').classList.add('show');
 }
-function startGame(){
-  playerName=document.getElementById('name-input').value.trim()||'ゲスト';
-  if(window.TomyStamp&&playerName!=='ゲスト')TomyStamp.setPlayer(playerName);
-  questions=shuffle(DB[currentGenre.id]).slice(0,10);
-  qIndex=0;score=0;correctCount=0;wrongCount=0;wrongAnswers=[];
-  showScreen('screen-quiz');showQuestion();startTimer();
+function closeModal(){document.getElementById('modalBg').classList.remove('show');pendingGenre=null;}
+function confirmStart(){
+  const key=pendingGenre;
+  document.getElementById('modalBg').classList.remove('show');
+  if(key) startGame(key);
 }
-function retryGame(){showScreen('screen-intro');}
-function startTimer(){clearInterval(timer);timeLeft=120;updateTimerDisplay();timer=setInterval(()=>{timeLeft--;updateTimerDisplay();if(timeLeft<=0){clearInterval(timer);endGame();}},1000);}
-function updateTimerDisplay(){const el=document.getElementById('quiz-timer');el.textContent=timeLeft;el.className='quiz-timer'+(timeLeft<=10?' danger':'');}
-function showQuestion(){
-  const q=questions[qIndex];answered=false;
-  document.getElementById('quiz-qnum').textContent=`Q${qIndex+1} / 10`;
-  document.getElementById('quiz-progress-fill').style.width=`${(qIndex/10)*100}%`;
-  document.getElementById('quiz-score').textContent=`${score} pt`;
-  document.getElementById('feedback-bar').className='feedback-bar';
-  document.getElementById('feedback-bar').textContent='';
-  document.getElementById('next-btn').className='next-btn';
-  if(q.type==='4'){
-    document.getElementById('quiz-type-badge').textContent='4択';
-    document.getElementById('quiz-type-badge').className='quiz-type-badge type-4';
-    document.getElementById('quiz-q').textContent=q.q;
-    const lb=['A','B','C','D'];
-    document.getElementById('quiz-choices').innerHTML=q.c.map((c,i)=>`<button class="choice-btn" onclick="answer4(${i})"><span class="choice-label">${lb[i]}</span>${c}</button>`).join('');
+function randomGenre(){openModal(ORDER[Math.floor(Math.random()*ORDER.length)]);}
+
+/* ---------- ユーティリティ ---------- */
+function shuffle(arr){
+  const a=arr.slice();
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+/* ---------- ゲーム開始 ---------- */
+function startGame(key){
+  curGenre=key;
+  const pool=QUIZ[key].pool;
+  questions=shuffle(pool).slice(0,Math.min(TOTAL_Q,pool.length));
+  idx=0;score=0;correctCount=0;wrongList=[];timeLeft=START_TIME;
+  document.getElementById('hudScore').textContent='0';
+  showScreen('quiz');
+  startTimer();
+  renderQuestion();
+}
+
+/* ---------- タイマー ---------- */
+function startTimer(){
+  clearInterval(timerId);
+  updateTimeUI();
+  timerId=setInterval(()=>{
+    timeLeft--;
+    if(timeLeft<=0){timeLeft=0;updateTimeUI();endGame();return;}
+    updateTimeUI();
+  },1000);
+}
+function updateTimeUI(){
+  document.getElementById('hudTime').textContent=timeLeft;
+  const pct=Math.max(0,Math.min(100,(timeLeft/START_TIME)*100));
+  document.getElementById('timeFill').style.width=pct+'%';
+  const pill=document.getElementById('timePill');
+  if(timeLeft<=15)pill.classList.add('warn');else pill.classList.remove('warn');
+}
+
+/* ---------- 出題（タイプライター＋早押し） ---------- */
+function renderQuestion(){
+  answered=false;
+  const q=questions[idx];
+  isOX=(typeof q.ox==='boolean');
+  document.getElementById('qTag').textContent=QUIZ[curGenre].name;
+  document.getElementById('qType').textContent=isOX?'○×問題':'4択問題';
+  document.getElementById('progress').textContent=`第 ${idx+1} 問 / ${questions.length}`;
+
+  // 選択肢を隠し、回答ボタンを表示
+  const box=document.getElementById('choices');
+  box.classList.remove('show');box.className='choices';box.innerHTML='';
+  document.getElementById('buzzWrap').style.display='block';
+
+  // タイプライター開始
+  typeQuestion(q.q);
+}
+function typeQuestion(text){
+  clearTimeout(typingTimeout);
+  fullQText=text;
+  const el=document.getElementById('qText');
+  el.classList.remove('fade-out','done');
+  el.textContent='';
+  let i=0;
+  (function step(){
+    el.textContent=text.slice(0,i);
+    if(i<text.length){i++;typingTimeout=setTimeout(step,TYPING_SPEED);}
+    else{el.classList.add('done');}
+  })();
+}
+
+/* 「回答する！」→ タイプ停止 → 問題文フェードアウト → 選択肢表示 */
+function buzz(){
+  if(answered)return;
+  clearTimeout(typingTimeout);
+  const el=document.getElementById('qText');
+  el.classList.add('fade-out');
+  document.getElementById('buzzWrap').style.display='none';
+
+  buildChoices(questions[idx]);
+  setTimeout(()=>{
+    const box=document.getElementById('choices');
+    box.style.display='grid';
+    void box.offsetWidth;
+    box.classList.add('show');
+  },280);
+}
+function buildChoices(q){
+  const box=document.getElementById('choices');
+  box.innerHTML='';box.className='choices';
+  if(isOX){
+    box.classList.add('ox');
+    // ◯ → ✕ の並びを固定（偏り防止はプール側で均等化）
+    [['◯',true],['✕',false]].forEach(([mark,val])=>{
+      const b=document.createElement('button');
+      b.className='choice ox-mark';b.textContent=mark;
+      b.onclick=()=>pick(b,val===q.ox,q);
+      box.appendChild(b);
+    });
   }else{
-    document.getElementById('quiz-type-badge').textContent='○×';
-    document.getElementById('quiz-type-badge').className='quiz-type-badge type-ox';
-    document.getElementById('quiz-q').textContent=q.q;
-    document.getElementById('quiz-choices').innerHTML=`<div class="ox-choices"><button class="ox-btn" onclick="answerOX(true)">⭕<span>正しい</span></button><button class="ox-btn" onclick="answerOX(false)">❌<span>誤り</span></button></div>`;
+    // {text,correct} を作りシャッフル（正解位置の偏り防止）
+    let opts=[{text:q.a,correct:true}].concat(q.w.map(w=>({text:w,correct:false})));
+    opts=shuffle(opts);
+    opts.forEach(o=>{
+      const b=document.createElement('button');
+      b.className='choice';b.textContent=o.text;
+      b.onclick=()=>pick(b,o.correct,q);
+      box.appendChild(b);
+    });
   }
 }
-function answer4(idx){if(answered)return;answered=true;const q=questions[qIndex];const btns=document.querySelectorAll('.choice-btn');btns.forEach(b=>b.disabled=true);btns[q.a].classList.add('correct');if(idx!==q.a)btns[idx].classList.add('wrong');processAnswer(idx===q.a,q.c[q.a],q.q);}
-function answerOX(val){if(answered)return;answered=true;const q=questions[qIndex];const btns=document.querySelectorAll('.ox-btn');btns.forEach(b=>b.disabled=true);btns[q.a?0:1].classList.add('correct');if(val!==q.a)btns[val?0:1].classList.add('wrong');processAnswer(val===q.a,q.a?'○（正しい）':'×（誤り）',q.q);}
-function processAnswer(isCorrect,correctAns,qText){
-  const fb=document.getElementById('feedback-bar');
-  if(isCorrect){score+=10;correctCount++;timeLeft=Math.min(timeLeft+5,999);fb.textContent='✅ 正解！ ＋5秒';fb.className='feedback-bar ok show';}
-  else{wrongCount++;timeLeft=Math.max(timeLeft-5,0);fb.textContent=`❌ 正解は「${correctAns}」（−5秒）`;fb.className='feedback-bar ng show';wrongAnswers.push({q:qText,a:correctAns});}
-  updateTimerDisplay();document.getElementById('next-btn').className='next-btn show';
+
+/* ---------- 解答処理 ---------- */
+function pick(btn,isCorrect,q){
+  if(answered)return;
+  answered=true;
+  clearInterval(timerId); // オーバーレイ閲覧中はタイマー停止
+
+  const buttons=document.querySelectorAll('#choices .choice');
+  buttons.forEach(b=>b.disabled=true);
+  if(btn&&btn.blur)btn.blur();
+  const correctText=isOX?(q.ox?'◯（正しい）':'✕（誤り）'):q.a;
+
+  if(isCorrect){
+    score+=10;correctCount++;
+    timeLeft=Math.min(MAX_TIME,timeLeft+5);
+    btn.classList.add('correct');
+    document.getElementById('hudScore').textContent=score;
+    updateTimeUI();
+    showToast(true,'✅ 正解！','+10点　時間 +5秒　⏱');
+  }else{
+    timeLeft=Math.max(0,timeLeft-5);
+    btn.classList.add('wrong');
+    buttons.forEach(b=>{
+      if(isOX){ if((b.textContent==='◯')===q.ox)b.classList.add('correct'); }
+      else{ if(b.textContent===q.a)b.classList.add('correct'); }
+    });
+    updateTimeUI();
+    showToast(false,'❌ 不正解',`正解は「${isOX?(q.ox?'◯':'✕'):q.a}」（時間 −5秒）`);
+    wrongList.push({
+      q:q.q,
+      yours: isOX?(q.ox?'✕':'◯'):btn.textContent,
+      correct: correctText,
+      e:q.e||''
+    });
+  }
+
+  // 問題文を全文でフェードイン再表示
+  const el=document.getElementById('qText');
+  el.classList.remove('fade-out');
+  el.classList.add('done');
+  el.textContent=fullQText;
+
+  // 0.6秒後に正誤オーバーレイ
+  setTimeout(()=>showResultOverlay(isCorrect,q,correctText),600);
 }
-function nextQuestion(){qIndex++;if(qIndex>=10){clearInterval(timer);endGame();}else{showQuestion();}}
+
+/* ---------- 正誤オーバーレイ ---------- */
+function showResultOverlay(isCorrect,q,correctText){
+  const ov=document.getElementById('resultOverlay');
+  const card=document.getElementById('roCard');
+  card.className='ro-card '+(isCorrect?'ok':'ng');
+  document.getElementById('roMark').textContent=isCorrect?'◯':'✕';
+  document.getElementById('roHead').textContent=isCorrect?'正解！':'残念…';
+  document.getElementById('roAns').innerHTML=`正解<b>${escapeHtml(correctText)}</b>`;
+  const ex=document.getElementById('roExplain');
+  if(q.e){ex.style.display='block';ex.innerHTML='💡 '+escapeHtml(q.e);}
+  else{ex.style.display='none';}
+  ov.classList.add('show');
+}
+
+/* 「次の問題へ」→ 押した瞬間にトーストを消す */
+function nextQuestion(){
+  hideToast();
+  document.getElementById('resultOverlay').classList.remove('show');
+  idx++;
+  if(idx>=questions.length || timeLeft<=0){
+    endGame();
+  }else{
+    startTimer();      // 停止していたタイマーを再開
+    renderQuestion();
+  }
+}
+
+/* ---------- トースト ---------- */
+function showToast(ok,big,small){
+  const t=document.getElementById('toast');
+  t.className='toast '+(ok?'ok':'ng');
+  document.getElementById('toastBig').textContent=big;
+  document.getElementById('toastSmall').textContent=small;
+  void t.offsetWidth;
+  t.classList.add('show');
+}
+function hideToast(){document.getElementById('toast').classList.remove('show');}
+
+/* ---------- 終了・結果 ---------- */
 function endGame(){
-  clearInterval(timer);
-  const bonus=Math.max(timeLeft,0),total=score+bonus;
-  const medal=correctCount>=9?'🥇':correctCount>=7?'🥈':correctCount>=5?'🥉':'😅';
-  document.getElementById('result-genre').textContent=currentGenre.icon+' '+currentGenre.name;
-  document.getElementById('result-score').textContent=total;
-  document.getElementById('result-medal').textContent=medal;
-  document.getElementById('result-correct').textContent=correctCount;
-  document.getElementById('result-wrong').textContent=wrongCount;
-  document.getElementById('result-bonus').textContent='+'+bonus;
-  const ws=document.getElementById('wrong-section');
-  if(wrongAnswers.length>0){ws.innerHTML=`<div class="wrong-label">// ❌ 間違えた問題（${wrongAnswers.length}問）</div>`+wrongAnswers.map((w,i)=>`<div class="wrong-item"><div class="wrong-item-num">問${i+1}</div><div class="wrong-item-q">${w.q}</div><div class="wrong-item-ans"><span class="wrong-item-ans-label">正解</span><span class="wrong-item-ans-text">${w.a}</span></div></div>`).join('');}
-  else{ws.innerHTML='<div style="text-align:center;padding:20px;font-family:\'Share Tech Mono\',monospace;font-size:12px;color:var(--gold3);">🎉 全問正解！</div>';}
-  saveRanking(currentGenre.id,playerName,total,correctCount);
-  if(window.TomyStamp&&playerName!=='ゲスト'){TomyStamp.send('leaders-quiz',currentGenre.name,correctCount).then(r=>{if(r.ok)showToast('⭐ スタンプ獲得！ランキングに反映されます');});}
-  showScreen('screen-result');
+  clearInterval(timerId);
+  clearTimeout(typingTimeout);
+  hideToast();
+  document.getElementById('resultOverlay').classList.remove('show');
+
+  const base=correctCount*10;
+  const bonus=timeLeft;
+  const total=base+bonus;
+  lastResult={genre:curGenre,total,base,bonus,correct:correctCount,saved:false,hanamaru:false,stamped:false};
+
+  document.getElementById('resGenre').textContent='【'+QUIZ[curGenre].name+'】';
+  document.getElementById('resTotal').textContent=total;
+  document.getElementById('resCorrect').textContent=correctCount;
+  document.getElementById('resBase').textContent=base;
+  document.getElementById('resBonus').textContent=bonus;
+
+  const badge=document.getElementById('resBadge');
+  let label,bg,col;
+  if(correctCount>=10){label='🏆 世界情勢マスター！全問正解';bg='linear-gradient(135deg,#ffce3a,#e0a91f)';col='#2a1f04';}
+  else if(correctCount>=8){label='🌍 国際通の実力者';bg='linear-gradient(135deg,#ff0033,#c20026)';col='#fff';}
+  else if(correctCount>=6){label='📰 なかなかの時事通';bg='rgba(255,0,51,.18)';col='#ff6b86';}
+  else if(correctCount>=4){label='🗞️ これからニュースを追おう';bg='rgba(255,255,255,.1)';col='#ece6e9';}
+  else{label='🌱 まずは基礎から！';bg='rgba(255,255,255,.06)';col='#b3a9af';}
+  badge.textContent=label;badge.style.background=bg;badge.style.color=col;
+
+  document.getElementById('reviewBtn').style.display=wrongList.length?'block':'none';
+  document.getElementById('saveBtn').disabled=false;
+  document.getElementById('saveBtn').textContent='📥 ランキングに登録';
+
+  // 花丸スタンプ（正解率90%以上＝10問中9問以上）
+  const hm=document.getElementById('hanamaru');
+  if(correctCount>=9){
+    if(hm)hm.style.display='block';
+    lastResult.hanamaru=true;
+    // ポータル登録名が既にあれば終了時に自動送信（重複防止）
+    if(window.TomyStamp && TomyStamp.getPlayer() && !lastResult.stamped){
+      lastResult.stamped=true;
+      try{TomyStamp.send(STAMP_GAME_ID,QUIZ[curGenre].name,correctCount);}catch(e){}
+    }
+  }else{
+    if(hm)hm.style.display='none';
+  }
+  // 登録名欄に既存のポータル名を自動入力
+  try{
+    const pn=document.getElementById('playerName');
+    if(window.TomyStamp && pn && !pn.value){const sv=TomyStamp.getPlayer();if(sv)pn.value=sv;}
+  }catch(e){}
+
+  showScreen('result');
 }
-const LS_KEY='leaders_quiz_ranking';
-function saveRanking(gId,name,sc,correct){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');if(!data[gId])data[gId]=[];data[gId].push({name,score:sc,correct,date:new Date().toLocaleDateString('ja-JP')});data[gId].sort((a,b)=>b.score-a.score);data[gId]=data[gId].slice(0,20);localStorage.setItem(LS_KEY,JSON.stringify(data));}
-function showRanking(){const tabs=document.getElementById('ranking-tabs');tabs.innerHTML=GENRES.map(g=>`<button class="ranking-tab" onclick="switchRankingTab('${g.id}',this)">${g.icon} ${g.name}</button>`).join('');showScreen('screen-ranking');switchRankingTab(GENRES[0].id,tabs.querySelector('.ranking-tab'));}
-function switchRankingTab(id,btn){document.querySelectorAll('.ranking-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');currentRankingGenre=id;renderRanking(id);}
-function renderRanking(id){const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');const rows=data[id]||[];const list=document.getElementById('ranking-list');if(!rows.length){list.innerHTML='<div class="ranking-empty">// まだ記録がありません</div>';return;}list.innerHTML=rows.map((r,i)=>{const pos=i+1,pc=pos===1?'gold':pos===2?'silver':pos===3?'bronze':'';const rc=pos===1?'top1':pos===2?'top2':pos===3?'top3':'';return `<div class="ranking-row ${rc}"><span class="ranking-pos ${pc}">${pos}</span><span class="ranking-name">${r.name}</span><span style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text3);">${r.correct}/10</span><span class="ranking-score">${r.score}</span><span class="ranking-date">${r.date}</span></div>`;}).join('');}
-function deleteRanking(){if(!currentRankingGenre)return;if(!confirm(`「${GENRES.find(g=>g.id===currentRankingGenre)?.name}」の記録を削除しますか？`))return;const data=JSON.parse(localStorage.getItem(LS_KEY)||'{}');delete data[currentRankingGenre];localStorage.setItem(LS_KEY,JSON.stringify(data));renderRanking(currentRankingGenre);}
+
+/* ---------- スコア保存（ローカル） ---------- */
+function loadRanking(){
+  try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{};}
+  catch(e){return {};}
+}
+function saveScore(){
+  if(!lastResult||lastResult.saved)return;
+  let name=document.getElementById('playerName').value.trim();
+  if(!name)name='名無しの政治通';
+  const data=loadRanking();
+  if(!data[lastResult.genre])data[lastResult.genre]=[];
+  const d=new Date();
+  const dateStr=`${d.getMonth()+1}/${d.getDate()}`;
+  data[lastResult.genre].push({name,score:lastResult.total,correct:lastResult.correct,date:dateStr});
+  data[lastResult.genre].sort((a,b)=>b.score-a.score);
+  data[lastResult.genre]=data[lastResult.genre].slice(0,50);
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}catch(e){}
+  // ポータル花丸ランキングへ反映（正解率90%以上のとき）
+  try{
+    if(window.TomyStamp){
+      TomyStamp.setPlayer(name);
+      if(lastResult.hanamaru && !lastResult.stamped){
+        lastResult.stamped=true;
+        TomyStamp.send(STAMP_GAME_ID,QUIZ[lastResult.genre].name,lastResult.correct);
+      }
+    }
+  }catch(e){}
+  lastResult.saved=true;
+  document.getElementById('saveBtn').textContent='✅ 登録しました';
+  document.getElementById('saveBtn').disabled=true;
+  setTimeout(()=>showRanking(lastResult.genre),500);
+}
+
+/* ---------- 復習 ---------- */
+function showReview(){reviewIdx=0;renderReview();showScreen('review');}
+function renderReview(){
+  const card=document.getElementById('reviewCard');
+  if(wrongList.length===0){
+    card.innerHTML=`<div class="perfect-msg">🎉<br>間違いはありませんでした！<br>お見事、世界情勢マスター！</div>`;
+    return;
+  }
+  const w=wrongList[reviewIdx];
+  card.innerHTML=`
+    <div class="review-head">
+      <span class="ttl">📖 間違えた問題</span>
+      <span class="count">${reviewIdx+1} / ${wrongList.length}</span>
+    </div>
+    <div class="review-q">${escapeHtml(w.q)}</div>
+    <div class="ans-block">
+      <div class="ans-line yours"><span class="lab">あなたの解答</span><span class="val">${escapeHtml(w.yours)}</span></div>
+      <div class="ans-line right"><span class="lab">正解</span><span class="val">${escapeHtml(w.correct)}</span></div>
+    </div>
+    ${w.e?`<div class="explain">💡 ${escapeHtml(w.e)}</div>`:''}
+    <div class="review-nav">
+      <button class="btn btn-ghost" onclick="prevReview()" ${reviewIdx===0?'disabled style=opacity:.4':''}>‹ 前へ</button>
+      <button class="btn btn-ghost" onclick="nextReview()" ${reviewIdx===wrongList.length-1?'disabled style=opacity:.4':''}>次へ ›</button>
+    </div>`;
+}
+function prevReview(){if(reviewIdx>0){reviewIdx--;renderReview();}}
+function nextReview(){if(reviewIdx<wrongList.length-1){reviewIdx++;renderReview();}}
+function backToResult(){showScreen('result');}
+
+/* ---------- ランキング画面 ---------- */
+let curRankTab=null;
+function showRanking(focusGenre){
+  buildRankTabs();
+  curRankTab=focusGenre||ORDER[0];
+  renderRankList();
+  showScreen('ranking');
+}
+function buildRankTabs(){
+  const tabs=document.getElementById('rankTabs');
+  tabs.innerHTML='';
+  ORDER.forEach(key=>{
+    const b=document.createElement('button');
+    b.className='tab';b.textContent=QUIZ[key].name;
+    b.dataset.key=key;
+    b.onclick=()=>{curRankTab=key;renderRankList();};
+    tabs.appendChild(b);
+  });
+}
+function renderRankList(){
+  document.querySelectorAll('#rankTabs .tab').forEach(t=>{
+    t.classList.toggle('active',t.dataset.key===curRankTab);
+  });
+  const data=loadRanking();
+  const list=document.getElementById('rankList');
+  const arr=(data[curRankTab]||[]).slice(0,10);
+  if(arr.length===0){
+    list.innerHTML=`<div class="rank-empty">まだ記録がありません。<br>「${QUIZ[curRankTab].name}」に挑戦してみましょう！</div>`;
+    return;
+  }
+  list.innerHTML='';
+  arr.forEach((r,i)=>{
+    const li=document.createElement('li');
+    if(i<3)li.classList.add('top'+(i+1));
+    const medal=['🥇','🥈','🥉'][i]||(i+1);
+    li.innerHTML=`<span class="pos">${medal}</span>
+      <span class="nm">${escapeHtml(r.name)}</span>
+      <span class="dt">${r.date||''}</span>
+      <span class="sc">${r.score}点</span>`;
+    list.appendChild(li);
+  });
+}
+function clearRanking(){
+  if(confirm('この端末に保存されたランキングをすべて消去します。よろしいですか？')){
+    try{localStorage.removeItem(STORAGE_KEY);}catch(e){}
+    renderRankList();
+  }
+}
+
+/* ---------- 画面遷移 ---------- */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  window.scrollTo(0,0);
+}
+function goTitle(){clearInterval(timerId);clearTimeout(typingTimeout);hideToast();document.getElementById('resultOverlay').classList.remove('show');showScreen('title');}
+function retrySame(){if(curGenre)startGame(curGenre);}
+function quitGame(){
+  if(confirm('クイズをやめてトップに戻りますか？（このプレイのスコアは記録されません）')){
+    clearInterval(timerId);clearTimeout(typingTimeout);hideToast();
+    document.getElementById('resultOverlay').classList.remove('show');
+    showScreen('title');
+  }
+}
+
+/* ---------- canvas 背景（動的リサイズ） ---------- */
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+const GLYPHS=['🌍','🌏','🏛️','🗳️','📰','🤝','⚖️','🗺️','★','◆','UN','G7','NATO','EU','PM'];
+const NEON=['255,0,51','255,206,58','255,107,134'];
+let drops=[],dpr=1;
+function resizeCanvas(){
+  dpr=window.devicePixelRatio||1;
+  canvas.width=Math.floor(window.innerWidth*dpr);
+  canvas.height=Math.floor(window.innerHeight*dpr);
+  canvas.style.width=window.innerWidth+'px';
+  canvas.style.height=window.innerHeight+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  const count=Math.max(12,Math.floor(window.innerWidth/40));
+  drops=[];
+  for(let i=0;i<count;i++){
+    drops.push({
+      x:Math.random()*window.innerWidth,
+      y:Math.random()*window.innerHeight,
+      size:14+Math.random()*22,
+      spd:.15+Math.random()*.5,
+      ch:GLYPHS[Math.floor(Math.random()*GLYPHS.length)],
+      col:NEON[Math.floor(Math.random()*NEON.length)],
+      a:.05+Math.random()*.12
+    });
+  }
+}
+function drawBg(){
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  drops.forEach(d=>{
+    ctx.font=`${d.size}px 'Noto Sans JP', sans-serif`;
+    ctx.fillStyle=`rgba(${d.col},${d.a})`;
+    ctx.shadowColor=`rgba(${d.col},${d.a*2})`;
+    ctx.shadowBlur=10;
+    ctx.fillText(d.ch,d.x,d.y);
+    ctx.shadowBlur=0;
+    d.y+=d.spd;
+    if(d.y>window.innerHeight+d.size){
+      d.y=-d.size;d.x=Math.random()*window.innerWidth;
+      d.ch=GLYPHS[Math.floor(Math.random()*GLYPHS.length)];
+      d.col=NEON[Math.floor(Math.random()*NEON.length)];
+    }
+  });
+  requestAnimationFrame(drawBg);
+}
+let resizeTO;
+window.addEventListener('resize',()=>{clearTimeout(resizeTO);resizeTO=setTimeout(resizeCanvas,120);});
+window.addEventListener('orientationchange',()=>setTimeout(resizeCanvas,200));
+
+/* ---------- 起動 ---------- */
 buildGenreCards();
+resizeCanvas();
+drawBg();
+document.getElementById('modalBg').addEventListener('click',e=>{if(e.target.id==='modalBg')closeModal();});
 </script>
 </body>
 </html>
